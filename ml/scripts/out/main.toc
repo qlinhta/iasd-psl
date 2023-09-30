@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {paragraph}{Machine Learning}{2}{paragraph*.1}%
+\contentsline {paragraph}{Fundamentals of Backpropagation in Deep Learning}{3}{paragraph*.2}%
+\contentsline {paragraph}{Machine Learning Paradigms}{4}{paragraph*.4}%
+\contentsline {section}{\numberline {2}Supervised Learning}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Probabilistic Assumptions}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Key Questions}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Key Issues}{8}{subsection.2.3}%

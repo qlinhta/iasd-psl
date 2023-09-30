@@ -1,0 +1,122 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{qlta}[2023/09/30 Quyen-Linh TA consolidated settings]
+
+% This style was inspired by LaTeX LIPIcs 2021 (Love this style): https://www.overleaf.com/latex/templates/lipics-2021-version-sample/ysdsqsfbvxdf
+
+% Package Imports
+\RequirePackage{amsmath, amssymb, amsthm, graphicx, booktabs, setspace, bbm, pgfplots, parskip, geometry, floatrow, sidenotes, titlesec, fancyhdr, lmodern, fontenc, xcolor, tikz, hyperref, caption, lineno, background, etoolbox}
+
+% Make math equation a bigger!
+\AtBeginEnvironment{equation}{\large}
+
+% Geometry Settings
+\geometry{marginparwidth=6cm, marginparsep=0.7cm}
+
+% Colors
+\definecolor{myblue}{HTML}{3A8EC9}
+
+% Hyperref Settings
+\hypersetup{
+    colorlinks,
+    citecolor=myblue,
+    filecolor=myblue,
+    linkcolor=myblue,
+    urlcolor=myblue
+}
+
+% Caption Settings
+\DeclareCaptionLabelFormat{boldlabel}{\textbf{\sffamily #1 }\textbf{\sffamily #2}}
+\DeclareCaptionFormat{mysquare}{$\color{yellow}\blacksquare$\space#1#2#3}
+\captionsetup[figure]{format=mysquare,labelformat=boldlabel,font=sf}
+
+% Title Commands
+\makeatletter
+\newcommand{\subtitle}[1]{\gdef\@subtitle{#1}}
+\newcommand{\classinfo}[1]{\gdef\@classinfo{#1}}
+\newcommand{\lecturer}[1]{\gdef\@lecturer{#1}}
+\newcommand{\studentone}[1]{\gdef\@studentone{#1}}
+\newcommand{\studenttwo}[1]{\gdef\@studenttwo{#1}}
+\makeatother
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \bgroup\setlength{\parindent}{0pt}
+    \begin{flushleft}
+    {\huge\sffamily\bfseries\color{black}\@title}
+        \vskip 0.3em
+            {\color{gray}\hrule height 0.7pt}
+        \vskip 0.1em
+        \renewcommand{\arraystretch}{0.8}
+        \begin{tabular}{p{0.7\linewidth} p{0.2\linewidth}}
+            \large\sffamily\color{black}\@subtitle &                                               \\
+            \small\color{gray}\@classinfo          & \small\color{gray}Lecture:                    \\
+            & \normalsize\sffamily\color{black}\@lecturer   \\
+            & \small\color{gray}Scribed by:                 \\
+            & \normalsize\sffamily\color{black}\@studentone \\
+            & \normalsize\sffamily\color{black}\@studenttwo \\
+        \end{tabular}
+    \end{flushleft}
+    \egroup
+}
+\makeatother
+
+% Theorem Styles and Definitions
+\newtheoremstyle{head_theorem}
+{} % Space above
+{} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\sffamily\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{$\blacktriangleright$\thmname{ #1}\thmnumber{ #2}}
+
+\theoremstyle{head_theorem}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{example}{Example}[section]
+
+% Abstract Environment Redefinition
+\renewenvironment{abstract}
+{\par{\bfseries \noindent \sffamily \abstractname.}}
+{\vskip 0.1em \medskip\noindent \rule{\linewidth}{.5pt}}
+
+% Section Formatting
+\titleformat{\section}
+{\sffamily\fontsize{13}{13}\bfseries\selectfont}
+{\tikz[baseline=(a.base)] \node[fill=yellow, anchor=east, outer sep=0, inner xsep=0.5em, inner ysep=0.25em] (a) {\color{black}\thesection};}
+{0.5em}
+{\color{black}}
+
+\titleformat{\subsection}
+{\sffamily\fontsize{12}{12}\bfseries\color{black}\selectfont}
+{\thesubsection}
+{0.5em}
+{}
+
+\titleformat{\paragraph}[block]
+{\sffamily\bfseries\normalsize}
+{\theparagraph}
+{1em}
+{}
+
+
+\backgroundsetup{
+    scale=1,
+    color=black,
+    opacity=0.4,
+    angle=0,
+    position=current page.south east,
+    vshift=2cm,
+    hshift=-1.5cm,
+    contents={
+        \begin{tikzpicture}[every picture/.style={reset cm}]
+            \fill [yellow] (0,0) rectangle (3cm,1cm);
+            \node at (1.5cm, 0.5cm) {\sffamily\bfseries\upshape IASD 2023};
+        \end{tikzpicture}
+    }
+}
+\endinput
+
+
