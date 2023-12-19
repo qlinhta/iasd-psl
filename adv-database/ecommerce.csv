@@ -1,0 +1,451 @@
+customer_id,name,email,address,dataset
+1.0,Collin Cruz,jason95@norris-rivas.com,"597 Zachary Island
+South Oscar, WI 92514",Customers
+2.0,Andrew Stephens,jonathan48@gmail.com,"745 Barbara Meadow Apt. 055
+South Tara, IN 74133",Customers
+3.0,Kim Navarro,pamela57@pacheco-coleman.com,"376 Jesse Mews Apt. 964
+Nelsonhaven, IA 27399",Customers
+4.0,Mrs. Ashley Johnson,justinwright@hernandez.net,"72056 Mitchell Fall Suite 731
+Port Derrick, PA 47771",Customers
+5.0,Justin Alvarez,fjoyce@hotmail.com,"560 Christina Station Suite 797
+East Jason, MN 23710",Customers
+6.0,Robert Watkins,adamsmichael@gmail.com,"2245 Thompson Inlet Suite 932
+Port David, WY 76267",Customers
+7.0,Abigail Proctor,qbrown@logan-brown.com,"5978 Kenneth Prairie Apt. 098
+Newtonville, KY 09717",Customers
+8.0,Michele Cantu,jerrymiller@yahoo.com,"9373 Brittany Mountain
+Norrishaven, OR 00824",Customers
+9.0,Kylie Reed,bhill@watts.org,"7963 George Meadows
+North John, CT 83278",Customers
+10.0,Laura Brown,smithchristina@stephenson-lowe.com,"82644 Chen Plains
+Josephbury, ID 93778",Customers
+11.0,Tammy Walton,ocollins@gmail.com,"955 Roberts Court
+West Joshua, SC 69936",Customers
+12.0,Christine Smith,hbeltran@rodriguez-wells.com,"0070 Michael Glen Apt. 833
+Lake Christinebury, CO 43576",Customers
+13.0,Edward Cox,riveratimothy@hotmail.com,"0910 Debra Trail
+Timothyville, IL 54899",Customers
+14.0,Donna Gutierrez,lhughes@lutz.com,"61858 Spencer Causeway
+Lake Christopher, OH 78566",Customers
+15.0,Tyler Johnson,jennifer08@yahoo.com,"887 Taylor Tunnel
+Ortizborough, OH 49460",Customers
+16.0,Don Steele,johnsondonna@hotmail.com,"62531 Derek Burgs
+Martinezmouth, WV 48190",Customers
+17.0,Destiny Carlson,tiffanywells@torres.net,"45853 Brittany Stravenue Suite 746
+Tracifort, IL 63362",Customers
+18.0,Jennifer Jackson,mhouston@hotmail.com,"5554 Jessica Coves Suite 774
+Andrewbury, WI 39528",Customers
+19.0,Valerie Hall,pamelaallen@ramirez-garcia.com,"408 Beck Plain
+North Steven, MS 35533",Customers
+20.0,Dana Osborn,natasha36@gmail.com,"299 Clark Estate Apt. 262
+New Julie, OK 73576",Customers
+21.0,Melissa Hart,hectorolson@underwood.com,"89741 Brandon Pines
+West Charlesmouth, CT 78964",Customers
+22.0,Monica Olsen,anne85@lee.com,"126 Carol Row Suite 880
+Brownburgh, CT 02026",Customers
+23.0,Rebecca Hughes,pmoody@flores.com,"7733 Hansen Corners
+Scottstad, OH 75006",Customers
+24.0,Lacey Liu,amorrison@fernandez-brown.com,"0783 Denise Alley Suite 776
+Burgessview, ME 55957",Customers
+25.0,Regina Harris,victor77@richards.org,"539 Shah Land
+Laurastad, CT 23114",Customers
+26.0,Glen Daniel,qparker@gmail.com,"59119 Raymond Crescent
+New Gloriaton, MT 93135",Customers
+27.0,Tracy Dyer,dgates@hawkins.com,"19945 Mark Ranch Suite 272
+New Thomaschester, VT 08346",Customers
+28.0,Robert Molina,hansenjason@hotmail.com,"469 Graham Crescent Apt. 465
+Carolynside, ME 65455",Customers
+29.0,Curtis Roman,deborahelliott@johnson-west.org,"277 Mitchell Mission Apt. 124
+North Jessicamouth, NM 04923",Customers
+30.0,Todd Lin,adam35@barnes.com,"05686 Allen Way
+Castanedamouth, IA 79176",Customers
+31.0,Justin Patterson,nlarson@gmail.com,"3537 Brown Extensions Suite 851
+Lake Gary, WV 04582",Customers
+32.0,Jessica Daniels MD,michaelpeterson@yahoo.com,"773 Julie Heights Suite 156
+South Donnahaven, CT 04326",Customers
+33.0,Olivia Morton,aramos@ferguson.net,"6133 Thompson Falls Suite 563
+Hayesside, NE 16591",Customers
+34.0,Russell Thomas,olsenjerry@gmail.com,"68434 James Locks
+Baldwinhaven, OK 13717",Customers
+35.0,Mark Williams,hwalters@hotmail.com,"9460 Miller Junction Apt. 081
+East Stephen, DE 46231",Customers
+36.0,Karen Hernandez,debrakelly@yahoo.com,"776 Stephen Fords Suite 327
+Randolphland, NJ 95241",Customers
+37.0,Rachel Moore,mackenzie92@hotmail.com,"53901 Cruz Village
+New Paulberg, WV 06979",Customers
+38.0,Katelyn Jackson,anelson@good-meyer.com,"01890 Daugherty Land Apt. 548
+North Jessica, IL 48199",Customers
+39.0,Brian Buchanan,newmandavid@collins.com,"PSC 0164, Box 6927
+APO AA 58673",Customers
+40.0,Jonathan Berg,jason30@hotmail.com,"892 Valerie Camp
+East Jacobchester, NC 02326",Customers
+41.0,Ronnie Farley,spenceandrew@dixon.com,"973 Allen Mountains
+South Dylanborough, OH 32760",Customers
+42.0,Donna Reed,andrewsjoann@myers-tyler.com,"2700 Kayla Garden Suite 037
+North Stephanie, ND 32795",Customers
+43.0,Alexander Ruiz,christine61@gmail.com,"7854 Andrew Junctions
+Justinbury, AL 86956",Customers
+44.0,Derek Lee,chrisstanley@rivera.biz,"381 Garner Shore Apt. 481
+Johnbury, MI 36129",Customers
+45.0,Amy Poole,pollardjessica@hotmail.com,"79464 Valenzuela Well Suite 180
+Villahaven, OK 21984",Customers
+46.0,Andrew Ramsey,dunncaroline@gmail.com,"184 Anthony Estates Apt. 737
+Lake Christy, ND 74489",Customers
+47.0,Ronald Sherman,andersonmaria@yahoo.com,"Unit 2440 Box 9335
+DPO AA 17131",Customers
+48.0,Monica Estrada,johnsontammy@yahoo.com,"253 Melinda Falls Apt. 010
+Randymouth, CO 61595",Customers
+49.0,Cynthia Mason,stephanie06@hotmail.com,"599 Brown Ferry
+East Laurahaven, KS 43769",Customers
+50.0,James Soto,vgibson@gmail.com,"680 Bush Square Suite 336
+West Melanie, OH 38245",Customers
+51.0,Anthony Berry,johnsonmatthew@gmail.com,"92851 Frank Forks Suite 027
+Cookland, NM 67265",Customers
+52.0,Colleen Patterson,oconnellkenneth@compton.net,"32725 Jennifer Motorway Apt. 235
+Lake Melissaport, ME 65982",Customers
+53.0,Tonya Rodriguez,chelseacrawford@hotmail.com,"8362 Frank Canyon Suite 267
+New Kristin, DC 87886",Customers
+54.0,Jacqueline Grant,cameron21@horn-noble.com,"3178 May Circle
+Sharonside, AK 94212",Customers
+55.0,David Duncan,sguzman@hicks-hicks.com,"71139 Long Drive
+Lake Margaret, MD 52079",Customers
+56.0,Judy Ellis,bellis@carroll.com,"742 Terrence Trail
+North Cody, NM 62124",Customers
+57.0,Lindsey Perez,justin60@lewis-lopez.net,"552 Maria Common Suite 256
+Holmesberg, MI 20751",Customers
+58.0,Matthew Mercer,adamsjenna@koch.com,"5136 Michelle Knoll
+Port Jennifer, TN 23463",Customers
+59.0,Lisa Monroe,christian19@hotmail.com,"6536 Denise Spur
+South Ryan, MT 72063",Customers
+60.0,James Evans,breanna48@hotmail.com,"22363 Allen Falls Suite 661
+South Jenniferburgh, CO 33607",Customers
+61.0,Kimberly Powell,tcallahan@hotmail.com,"84380 Anderson Roads
+Beasleyport, MO 12871",Customers
+62.0,Roy Zimmerman,dukejoseph@figueroa.org,"PSC 9246, Box 2935
+APO AE 06487",Customers
+63.0,Richard Huber,breannawilliams@farmer-wright.net,"5989 Jason Rapid
+Reyestown, AZ 28686",Customers
+64.0,Mark Lester,latashaking@hotmail.com,"255 Steven Via Apt. 801
+Davisview, OR 39685",Customers
+65.0,Amy Johnson,sjensen@rasmussen.org,"62839 Shane Estates Apt. 953
+Craigville, TX 04733",Customers
+66.0,Erica Anderson,rmoore@brandt-howard.net,"7837 Tiffany Loop
+Boyerberg, WA 10655",Customers
+67.0,Adam Smith,qlindsey@yahoo.com,"20649 Ruiz Fort Suite 850
+Samanthashire, HI 27802",Customers
+68.0,Cassandra Herrera,jeromeallison@yahoo.com,"707 Sloan Lights Suite 897
+Glenfort, IL 36386",Customers
+69.0,Amy Green,ppetersen@hotmail.com,"34320 Morgan Prairie Suite 608
+East Ronaldview, IA 29304",Customers
+70.0,Patricia Sims,misty27@mathews.info,"3640 Rivas Hill Suite 179
+Reginamouth, MI 17126",Customers
+71.0,Kyle Christian,sharoncosta@hotmail.com,"28060 Tara Harbor Apt. 176
+Port Susanshire, MN 50236",Customers
+72.0,David Golden,watkinssarah@hotmail.com,"35742 Hernandez Coves Apt. 707
+East Johnchester, RI 46745",Customers
+73.0,John Anderson,trogers@yahoo.com,"4861 Cervantes Springs Apt. 615
+Port Carolineville, NM 43283",Customers
+74.0,Jennifer Washington,danielchad@lloyd.info,"PSC 0563, Box 6583
+APO AP 77860",Customers
+75.0,Jeremiah Green,zacharyberry@gmail.com,"0021 Ruiz Flats Apt. 198
+Smithfurt, WV 37462",Customers
+76.0,Jason Gonzales,gina45@davila.net,"8182 Benjamin Ways
+Curryberg, WA 22978",Customers
+77.0,Ryan Costa,hailey52@cummings-ponce.com,"02489 Todd Brook
+Port Tonyborough, MD 92687",Customers
+78.0,Maria Miller,henrydeleon@warner.com,"52307 Suzanne Cliffs
+East William, SD 40695",Customers
+79.0,Gabriella Brown,acarr@hotmail.com,"385 Thomas Dale
+East Karen, AK 98544",Customers
+80.0,Erica Morris,lkelley@williams.com,"77192 Julie Rue
+Port Joseborough, MS 46841",Customers
+81.0,Shawn Jones,prangel@foster-frederick.org,"6856 Louis Hollow
+Medinashire, SD 46089",Customers
+82.0,Tracy Young,larrymorrow@brooks-lowe.com,"2861 Hill Forge Apt. 635
+Michaelburgh, VA 52168",Customers
+83.0,Daniel Bush,davisjeffrey@gmail.com,"650 Glover Unions
+Port Emilymouth, WA 25551",Customers
+84.0,Carolyn Spencer,steven36@gmail.com,"36789 Campbell Course
+Cooperberg, IL 62239",Customers
+85.0,Bryan Vasquez,valerie18@scott-casey.org,"137 Angel Expressway Suite 331
+Allenville, ID 36705",Customers
+86.0,Andrew Martinez,karinamunoz@gmail.com,"12638 Sarah Drive Suite 386
+West Richard, IN 25828",Customers
+87.0,Denise Garcia,franklinsarah@smith-park.com,"768 Stanley Ports
+Christophershire, OH 10444",Customers
+88.0,Michael Smith,daniel91@scott-kennedy.com,"02997 Deanna Flats Apt. 057
+Racheltown, SD 47801",Customers
+89.0,Casey Bennett,christophergarcia@bell.com,"20587 Farmer Lodge
+Flynnmouth, KY 58443",Customers
+90.0,Alicia Ballard,lopezclarence@hotmail.com,"87809 Haney Trail Apt. 903
+Nicholasview, VT 44921",Customers
+91.0,Lauren Le,johnsontyler@parker.com,"109 James Course Suite 343
+Port Teresamouth, AR 57035",Customers
+92.0,Wendy Jones,julia18@gmail.com,"244 Durham Locks
+Stacyberg, ID 47174",Customers
+93.0,Erik Davis,tinawilliams@yahoo.com,"127 Fuller Grove
+Josephton, DE 47545",Customers
+94.0,Anthony Tran,schaefermckenzie@johnson.com,"Unit 2364 Box 8841
+DPO AE 35206",Customers
+95.0,Kelly George,brian85@yahoo.com,"15520 Torres Fords
+Lake Kimberlyside, PA 76399",Customers
+96.0,Adam Sullivan,rojasjustin@austin.com,"5898 James Ramp
+Cervantesborough, SC 68340",Customers
+97.0,Jody Martinez,jacob00@cunningham-palmer.com,"8559 Bass Pass Apt. 985
+New Sarah, OK 63868",Customers
+98.0,John Suarez,nevans@hotmail.com,"82077 Hutchinson Courts Suite 472
+Port Josephchester, DC 26399",Customers
+99.0,Natalie Farley,ndunn@yahoo.com,"Unit 7764 Box 8190
+DPO AA 95761",Customers
+100.0,Scott Gibbs,wilsonnicholas@yahoo.com,"11762 Stanley Mountain
+Lake Logantown, ID 06221",Customers
+,common,,,Products
+,body,,,Products
+,or,,,Products
+,quality,,,Products
+,in,,,Products
+,create,,,Products
+,build,,,Products
+,serve,,,Products
+,special,,,Products
+,what,,,Products
+,maintain,,,Products
+,executive,,,Products
+,parent,,,Products
+,eat,,,Products
+,artist,,,Products
+,Mr,,,Products
+,level,,,Products
+,interesting,,,Products
+,stand,,,Products
+,type,,,Products
+,team,,,Products
+,but,,,Products
+,father,,,Products
+,suddenly,,,Products
+,hit,,,Products
+,poor,,,Products
+,without,,,Products
+,cultural,,,Products
+,such,,,Products
+,popular,,,Products
+,real,,,Products
+,politics,,,Products
+,onto,,,Products
+,language,,,Products
+,girl,,,Products
+,page,,,Products
+,book,,,Products
+,exactly,,,Products
+,total,,,Products
+,able,,,Products
+,detail,,,Products
+,blue,,,Products
+,save,,,Products
+,heart,,,Products
+,Mrs,,,Products
+,area,,,Products
+,interview,,,Products
+,enter,,,Products
+,across,,,Products
+,hear,,,Products
+87.0,,,,Orders
+63.0,,,,Orders
+3.0,,,,Orders
+79.0,,,,Orders
+30.0,,,,Orders
+67.0,,,,Orders
+30.0,,,,Orders
+56.0,,,,Orders
+71.0,,,,Orders
+25.0,,,,Orders
+23.0,,,,Orders
+89.0,,,,Orders
+40.0,,,,Orders
+12.0,,,,Orders
+3.0,,,,Orders
+94.0,,,,Orders
+2.0,,,,Orders
+77.0,,,,Orders
+71.0,,,,Orders
+44.0,,,,Orders
+85.0,,,,Orders
+25.0,,,,Orders
+78.0,,,,Orders
+85.0,,,,Orders
+28.0,,,,Orders
+10.0,,,,Orders
+15.0,,,,Orders
+12.0,,,,Orders
+17.0,,,,Orders
+100.0,,,,Orders
+76.0,,,,Orders
+75.0,,,,Orders
+90.0,,,,Orders
+33.0,,,,Orders
+68.0,,,,Orders
+98.0,,,,Orders
+11.0,,,,Orders
+45.0,,,,Orders
+63.0,,,,Orders
+20.0,,,,Orders
+88.0,,,,Orders
+80.0,,,,Orders
+23.0,,,,Orders
+32.0,,,,Orders
+26.0,,,,Orders
+89.0,,,,Orders
+99.0,,,,Orders
+30.0,,,,Orders
+6.0,,,,Orders
+60.0,,,,Orders
+23.0,,,,Orders
+7.0,,,,Orders
+60.0,,,,Orders
+38.0,,,,Orders
+65.0,,,,Orders
+69.0,,,,Orders
+56.0,,,,Orders
+25.0,,,,Orders
+95.0,,,,Orders
+73.0,,,,Orders
+3.0,,,,Orders
+97.0,,,,Orders
+51.0,,,,Orders
+89.0,,,,Orders
+13.0,,,,Orders
+9.0,,,,Orders
+69.0,,,,Orders
+45.0,,,,Orders
+69.0,,,,Orders
+49.0,,,,Orders
+66.0,,,,Orders
+40.0,,,,Orders
+72.0,,,,Orders
+85.0,,,,Orders
+65.0,,,,Orders
+43.0,,,,Orders
+71.0,,,,Orders
+91.0,,,,Orders
+38.0,,,,Orders
+7.0,,,,Orders
+32.0,,,,Orders
+92.0,,,,Orders
+27.0,,,,Orders
+47.0,,,,Orders
+15.0,,,,Orders
+24.0,,,,Orders
+67.0,,,,Orders
+42.0,,,,Orders
+2.0,,,,Orders
+79.0,,,,Orders
+98.0,,,,Orders
+76.0,,,,Orders
+61.0,,,,Orders
+19.0,,,,Orders
+96.0,,,,Orders
+83.0,,,,Orders
+45.0,,,,Orders
+56.0,,,,Orders
+19.0,,,,Orders
+48.0,,,,Orders
+82.0,,,,Orders
+95.0,,,,Orders
+75.0,,,,Orders
+44.0,,,,Orders
+17.0,,,,Orders
+5.0,,,,Orders
+18.0,,,,Orders
+99.0,,,,Orders
+40.0,,,,Orders
+57.0,,,,Orders
+56.0,,,,Orders
+36.0,,,,Orders
+49.0,,,,Orders
+31.0,,,,Orders
+87.0,,,,Orders
+100.0,,,,Orders
+76.0,,,,Orders
+96.0,,,,Orders
+74.0,,,,Orders
+7.0,,,,Orders
+62.0,,,,Orders
+48.0,,,,Orders
+94.0,,,,Orders
+100.0,,,,Orders
+9.0,,,,Orders
+15.0,,,,Orders
+55.0,,,,Orders
+11.0,,,,Orders
+10.0,,,,Orders
+49.0,,,,Orders
+88.0,,,,Orders
+75.0,,,,Orders
+11.0,,,,Orders
+6.0,,,,Orders
+65.0,,,,Orders
+26.0,,,,Orders
+95.0,,,,Orders
+61.0,,,,Orders
+84.0,,,,Orders
+45.0,,,,Orders
+53.0,,,,Orders
+84.0,,,,Orders
+83.0,,,,Orders
+69.0,,,,Orders
+40.0,,,,Orders
+68.0,,,,Orders
+9.0,,,,Orders
+25.0,,,,Orders
+5.0,,,,Orders
+27.0,,,,Orders
+78.0,,,,Orders
+72.0,,,,Orders
+92.0,,,,Orders
+89.0,,,,Orders
+98.0,,,,Orders
+17.0,,,,Orders
+93.0,,,,Orders
+42.0,,,,Orders
+27.0,,,,Orders
+33.0,,,,Orders
+64.0,,,,Orders
+73.0,,,,Orders
+60.0,,,,Orders
+88.0,,,,Orders
+74.0,,,,Orders
+76.0,,,,Orders
+11.0,,,,Orders
+21.0,,,,Orders
+54.0,,,,Orders
+48.0,,,,Orders
+68.0,,,,Orders
+36.0,,,,Orders
+73.0,,,,Orders
+74.0,,,,Orders
+75.0,,,,Orders
+68.0,,,,Orders
+94.0,,,,Orders
+52.0,,,,Orders
+9.0,,,,Orders
+69.0,,,,Orders
+58.0,,,,Orders
+45.0,,,,Orders
+20.0,,,,Orders
+6.0,,,,Orders
+62.0,,,,Orders
+16.0,,,,Orders
+21.0,,,,Orders
+35.0,,,,Orders
+51.0,,,,Orders
+24.0,,,,Orders
+49.0,,,,Orders
+51.0,,,,Orders
+21.0,,,,Orders
+38.0,,,,Orders
+86.0,,,,Orders
+29.0,,,,Orders
+19.0,,,,Orders
+84.0,,,,Orders
+15.0,,,,Orders
+59.0,,,,Orders
