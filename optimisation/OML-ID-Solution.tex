@@ -1,0 +1,318 @@
+\documentclass[12pt]{article}
+
+\usepackage{fontspec}
+\setmainfont{Crimson}
+\DeclareRobustCommand{\bfseries}{\fontseries{b}\fontfamily{\sfdefault}\selectfont}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% Math packages
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+% Other packages
+\usepackage{graphicx}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{geometry}
+\geometry{
+    top=2cm,
+    bottom=2cm,
+    left=2.5cm,
+    right=2.5cm,
+}
+\setlength{\parskip}{0em}
+\setlength{\parindent}{0pt}
+\usepackage{microtype}
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{paracol}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{babel}
+\setstretch{1.125}
+
+
+\title{Optimisation for ML}
+\author{Quyen Linh TA}
+\date{December 2023}
+
+\begin{document}
+
+    \maketitle
+
+    \section*{Exercise 1: A nonconvex problem}
+
+    \textit{Justification of 0 as a Lower Bound:}\\
+    Given the loss function
+    \begin{equation}
+        \ell(h, y) := \left(y - \frac{1}{1+\exp(-h)}\right)^2,
+    \end{equation}
+    we observe that it is a squared term, which inherently makes it non-negative (\(\ell(h, y) \geq 0\)) for any real values of \(h\) and \(y\). Considering the optimization problem
+    \begin{equation}
+        \min_{\boldsymbol{w} \in \mathbb{R}^d} \phi(\boldsymbol{w}) := \frac{1}{n} \sum_{i=1}^{n} \ell\left(\boldsymbol{x}_{i}^{\mathrm{T}} \boldsymbol{w}, y_{i}\right),
+    \end{equation}
+
+    the function \(\phi(\boldsymbol{w})\) is expressed as the average of the loss \(\ell(h, y)\) over \(n\) samples. Since each term in the sum is non-negative, their average, \(\phi(\boldsymbol{w})\), is also non-negative. Thus, 0 is a logical lower bound for \(\phi\).\\
+
+    \textit{0 isn't necessary the Optimal Value:}\\
+    The function \(\phi\) is described as nonconvex. In nonconvex optimization problems, multiple local minima may exist, and finding the global minimum can be challenging. For 0 to be the optimal (minimum) value of \(\phi\), there must exist a weight vector \(\boldsymbol{w}\) such that for all \(i\),
+    \[
+        \frac{1}{1+\exp \left(-\boldsymbol{x}_{i}^{\mathrm{T}} \boldsymbol{w}\right)} = y_{i}.
+    \]
+    Given the logistic form of the prediction and the constraint \(y_i \in (0,1)\), it is not guaranteed that such a \(\boldsymbol{w}\) exists for every possible dataset. Therefore, while 0 is a lower bound for \(\phi(\boldsymbol{w})\), it is not necessarily the optimal value of the function.\\
+
+    \textit{b-i. Iteration with an Arbitrary Stepsize:}
+    The iteration rule for gradient descent with an arbitrary stepsize \(\alpha_k\) is given by:
+    \[
+        \boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha_k \nabla \phi(\boldsymbol{w}_k),
+    \]
+    where \(\boldsymbol{w}_k\) is the parameter vector at iteration \(k\), and \(\nabla \phi(\boldsymbol{w}_k)\) is the gradient of the objective function at \(\boldsymbol{w}_k\).
+
+    \textit{b-ii. Two Possible Choices for the Stepsize:}
+    \begin{enumerate}
+        \item Constant Stepsize: A fixed value for all iterations, e.g., \(\alpha_k = 0.01\).
+        \item Diminishing Stepsize: A decreasing value over iterations, e.g., \(\alpha_k = \frac{1}{\sqrt{k}}\).
+    \end{enumerate}
+
+    \textit{b-iii. Complexity of the Algorithm:}
+    The computational complexity per iteration is mainly determined by the gradient computation, typically \(O(n)\) for a sum of \(n\) terms. The total complexity also depends on the number of iterations to converge, influenced by the problem's characteristics and the stepsize choice.\\
+
+    \textit{c. Suppose that gradient descent returns a point with a zero gradient. Is it necessarily a minimum?}
+
+    No, a point with a zero gradient is not necessarily a minimum. In the context of a nonconvex function, a zero-gradient point can be:
+    \begin{itemize}
+        \item A local minimum, where the function value is lower than at nearby points.
+        \item A saddle point, where the function has a flat curvature in some directions but not necessarily a minimum.
+        \item A global minimum, which is the lowest point across the entire function's domain (less common in nonconvex functions).
+    \end{itemize}
+    Hence, while a zero-gradient point indicates a stationary point, further analysis is required to ascertain whether it is a minimum, especially in nonconvex optimization problems.\\
+
+    \textit{d. State the second-order necessary optimality conditions for problem (2). Is a point satisfying these conditions a minimum?}
+
+    The second-order necessary optimality conditions for a minimization problem are:
+    \begin{enumerate}
+        \item The gradient at the point must be zero, i.e., \(\nabla \phi(\boldsymbol{w}) = 0\).
+        \item The Hessian matrix at that point must be positive semi-definite, i.e., \(\nabla^2 \phi(\boldsymbol{w}) \succeq 0\).
+    \end{enumerate}
+    A point satisfying these conditions is not necessarily a minimum in nonconvex problems. While the first condition ensures that the point is a stationary point, the second condition (positive semi-definite Hessian) only implies that the function does not have a downward curvature at that point. It could still be a saddle point or a local minimum, but not necessarily a global minimum.\\
+
+    \textit{e. Suppose that we start gradient descent from a random initial point, and that the method converges towards a point satisfying the second-order necessary optimality conditions. How can you explain this phenomenon?}
+
+    The gradient descent algorithm updates the parameter vector \(\boldsymbol{w}\) iteratively according to the rule:
+    \[
+        \boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha_k \nabla \phi(\boldsymbol{w}_k),
+    \]
+    where \(\alpha_k\) is the stepsize. Convergence to a point where \(\nabla \phi(\boldsymbol{w}) = 0\) signifies that locally, no further decrease in \(\phi\) is possible along any direction, indicating a stationary point. If at this point, the Hessian matrix \(\nabla^2 \phi(\boldsymbol{w})\) is positive semi-definite (i.e., \(\nabla^2 \phi(\boldsymbol{w}) \succeq 0\)), it implies the function's curvature is non-negative in all directions, suggesting a local extremum, possibly a local minimum or a saddle point. However, in nonconvex problems, these conditions do not necessarily lead to a global minimum, as the landscape of \(\phi\) may contain multiple such points, and the convergence location is influenced by the initial point and the function's structure.
+
+    \section*{Exercise 2: Convex matrix recovery}
+    We consider a data matrix $\boldsymbol{X} \in \mathbb{R}^{d_{1} \times d_{2}}$, and a subset $\mathcal{S} \subset\left\{1, \ldots, d_{1}\right\} \times\left\{1, \ldots, d_{2}\right\}$.
+
+    The matrix recovery problem consists in finding the best approximation of $\boldsymbol{X}$ given some observed entries $\left\{\boldsymbol{X}_{i j} \mid(i, j) \in \mathcal{S}\right\}$. This amounts to solving the following optimization
+    problem:
+
+    \begin{equation}
+        \operatorname{minimize}_{W \in \mathbb{R}^{d_{1} \times d_{2}}} \frac{1}{2} \sum_{(i, j) \in \mathcal{S}}\left(\boldsymbol{W}_{i j}-\boldsymbol{X}_{i j}\right)^{2}
+    \end{equation}
+
+
+    For any value of $\mathcal{S}$, the problem (3) can be reformulated as a vector optimization problem. Indeed, if we denote by $w \in \mathbb{R}^{d}$ the concatenation of all columns of $W \in \mathbb{R}^{d_{1} \times d_{2}}$ (with
+    $d=d_{1} d_{2}$ ), problem (3) can be rewritten as
+
+    \begin{equation}
+        \underset{w \in \mathbb{R}^{d}}{\operatorname{minimize}} f(\boldsymbol{w}):=\frac{1}{2} \sum_{(i, j) \in \mathcal{S}}\left([\boldsymbol{w}]_{i+(j-1) d_{1}}-\boldsymbol{X}_{i j}\right)^{2}
+    \end{equation}
+
+    \textit{a-i. Characterizing a Solution of Problem (4):}\\
+    A solution to problem (4), where the objective function \( f(\boldsymbol{w}) \) is convex and \(\mathcal{C}^{1}\), can be characterized using the derivative of \( f \). The necessary and sufficient condition for \(\boldsymbol{w}^*\) to be the minimum of a convex, \(\mathcal{C}^{1}\) function is that its derivative at \(\boldsymbol{w}^*\) is zero, i.e.,
+    \[
+        \nabla f(\boldsymbol{w}^*) = 0.
+    \]
+    This condition implies that at \(\boldsymbol{w}^*\), there is no direction in which the function \( f \) decreases, which is a hallmark of a minimum in convex optimization.\\
+
+    \textit{a-ii. Convex Function Without a Minimum:}\\
+    An example of a \(\mathcal{C}^{1}\), convex function that does not possess a minimum is the linear function
+    \(
+    f(x) = x,
+    \)
+    defined on the domain \( \mathbb{R} \). Although this function is convex and differentiable (\(\mathcal{C}^{1}\)), it does not have a minimum because it extends infinitely in the negative direction.\\
+
+    \textit{b. Convergence Rate of Gradient Descent on Convex Problem}
+
+    The standard convergence rate of gradient descent on a convex problem such as (4) is \(\mathcal{O}\left(\frac{1}{K}\right)\). This rate applies to the suboptimality of the objective function value. Specifically, it refers to the difference between the objective function value at the current iterate \(\boldsymbol{w}_K\) after \(K\) iterations and the optimal value \(f(\boldsymbol{w}^*)\), i.e.,
+    \[
+        f(\boldsymbol{w}_K) - f(\boldsymbol{w}^*) = \mathcal{O}\left(\frac{1}{K}\right).
+    \]
+    This implies that the error in the objective function value decreases inversely with the number of iterations, indicating that more iterations lead to a closer approximation of the optimal value.\\
+
+    \textit{c. Convergence Rate and Algorithmic Idea of Accelerated Gradient}
+
+    The convergence rate for the accelerated gradient method, or Nesterov's accelerated gradient (NAG), is \(\mathcal{O}\left(\frac{1}{K^2}\right)\). This improved rate applies to the suboptimality in the objective function value, where
+    \[
+        f(\boldsymbol{w}_K) - f(\boldsymbol{w}^*) = \mathcal{O}\left(\frac{1}{K^2}\right).
+    \]
+    The method combines current and previous gradients, creating a momentum-like effect. This accelerates convergence by moving swiftly through slower regions, balancing the gradient direction with past momentum.\\
+
+    \textit{d. Linear Least-Squares Formulation of Objective Function}
+
+    The objective function of problem (4) is indeed a linear least-squares problem. This can be expressed as:
+    \[
+        f(\boldsymbol{w}) = \frac{1}{2} \|\boldsymbol{A} \boldsymbol{w} - \boldsymbol{b}\|^{2},
+    \]
+    where \(\boldsymbol{A} \in \mathbb{R}^{n \times d}\) is a matrix constructed from the subset \(\mathcal{S}\) of observed entries, and \(\boldsymbol{b} \in \mathbb{R}^{n}\) is a vector containing the corresponding values from \(\boldsymbol{X}\). Each row of \(\boldsymbol{A}\) corresponds to a specific observed entry in \(\mathcal{S}\), and \(\boldsymbol{b}\) represents the target values to be approximated. The function \(f(\boldsymbol{w})\) measures the squared Euclidean distance between the predictions \(\boldsymbol{A} \boldsymbol{w}\) and the actual values \(\boldsymbol{b}\), making it a quintessential linear least-squares problem.\\
+
+    \textit{d-i. Values and Dimensions for \(\boldsymbol{A}\) and \(\boldsymbol{b}\):}
+    The function \(f(\boldsymbol{w})=\frac{1}{2}\|\boldsymbol{A} \boldsymbol{w}-\boldsymbol{b}\|^{2}\) can be related to the matrix recovery problem. Given \(\boldsymbol{X} \in \mathbb{R}^{d_1 \times d_2}\) and \(\mathcal{S} \subset\{1, \ldots, d_1\} \times\{1, \ldots, d_2\}\), we can construct \(\boldsymbol{A}\) and \(\boldsymbol{b}\) as follows:
+    \begin{itemize}
+        \item \(\boldsymbol{A}\) is a matrix of size \(|\mathcal{S}| \times (d_1 d_2)\) where each row corresponds to a pair \((i, j) \in \mathcal{S}\) and has a 1 at the index \(i + (j-1)d_1\) and 0s elsewhere.
+        \item \(\boldsymbol{b}\) is a vector of length \(|\mathcal{S}|\) containing the observed values \(\boldsymbol{X}_{ij}\) for each \((i, j) \in \mathcal{S}\).
+    \end{itemize}
+
+    \textit{d-ii. Computing a Solution of (4):}
+    Knowing \(\boldsymbol{A}\) and \(\boldsymbol{b}\), a solution for \(f(\boldsymbol{w})\) can be computed by solving the normal equations:
+    \[
+        \boldsymbol{A}^T\boldsymbol{A} \boldsymbol{w} = \boldsymbol{A}^T\boldsymbol{b}.
+    \]
+    This results from setting the gradient of \(f(\boldsymbol{w})\) to zero. For convex problems like least squares, this solution minimizes \(f(\boldsymbol{w})\). If \(\boldsymbol{A}^T\boldsymbol{A}\) is invertible, the solution is:
+    \[
+        \boldsymbol{w}^* = (\boldsymbol{A}^T\boldsymbol{A})^{-1}\boldsymbol{A}^T\boldsymbol{b}.
+    \]
+
+
+    \textit{e-i. Local Minima of Strongly Convex Functions:}
+    For strongly convex functions, any local minimum is also a global minimum. This means that if the objective function of (3) or (4) is strongly convex, then any point that satisfies the conditions for a local minimum is in fact the global minimum for the function.\\
+
+    \textit{e-ii. Unique Global Minimum of Problem (3):}
+    In the context of problem (3), where all entries of the matrix are observed (\(\mathcal{S}=\left\{1, \ldots, d_{1}\right\} \times\left\{1, \ldots, d_{2}\right\}\)), the objective function becomes strongly convex. A strongly convex function has a unique global minimum. Therefore, problem (3) has a unique global minimum. This minimum is the point where the gradient of the objective function is zero.\\
+
+    \textit{e-iii. Algorithm with Better Convergence Rate:}
+    For problems where the objective function is a strongly convex quadratic function, the Conjugate Gradient (CG) method is an effective alternative to gradient descent, especially for large and sparse systems. The CG method is particularly suited for solving linear equations of the form \(\boldsymbol{A} \boldsymbol{x} = \boldsymbol{b}\) where \(\boldsymbol{A}\) is symmetric and positive definite.
+
+    \begin{algorithm}
+        \caption{Conjugate Gradient Method}
+        \begin{algorithmic}[1]
+            \State Initialize \(\boldsymbol{x}_0\), set \(\boldsymbol{r}_0 = \boldsymbol{b} - \boldsymbol{A} \boldsymbol{x}_0\), \(\boldsymbol{p}_0 = \boldsymbol{r}_0\)
+            \For{\(k = 0, 1, 2, \ldots\) until convergence}
+                \State Compute \(\alpha_k = \frac{\boldsymbol{r}_k^T \boldsymbol{r}_k}{\boldsymbol{p}_k^T \boldsymbol{A} \boldsymbol{p}_k}\)
+                \State Update \(\boldsymbol{x}_{k+1} = \boldsymbol{x}_k + \alpha_k \boldsymbol{p}_k\)
+                \State Compute \(\boldsymbol{r}_{k+1} = \boldsymbol{r}_k - \alpha_k \boldsymbol{A} \boldsymbol{p}_k\)
+                \If{\(\boldsymbol{r}_{k+1}\) is sufficiently small}
+                    \State \textbf{break}
+                \EndIf
+                \State Compute \(\beta_k = \frac{\boldsymbol{r}_{k+1}^T \boldsymbol{r}_{k+1}}{\boldsymbol{r}_k^T \boldsymbol{r}_k}\)
+                \State Update \(\boldsymbol{p}_{k+1} = \boldsymbol{r}_{k+1} + \beta_k \boldsymbol{p}_k\)
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+
+    This method uses the conjugacy of directions and optimal step sizes at each iteration to accelerate convergence compared to standard gradient descent.
+
+    \section*{Exercise 3: Sparse matrix recovery}
+    As in Exercise 2, we observe a subset of the entries of a matrix $X \in \mathbb{R}^{d_{1} \times d_{2}}$ identified by $\mathcal{S} \subset\left\{1, \ldots, d_{1}\right\} \times\left\{1, \ldots, d_{2}\right\}$, with $|\mathcal{S}|=n$.
+
+    In sparse matrix recovery, our goal is to compute a sparse approximation of $\boldsymbol{X}$ that matches the observed entries as best as possible, which we model through the formulation
+
+    \begin{equation}
+        \operatorname{minimize}_{\boldsymbol{W} \in \mathbb{R}^{d_{1} \times d_{2}}} \frac{1}{2 n} \sum_{(i, j) \in \mathcal{S}}\left(\boldsymbol{W}_{i j}-\boldsymbol{X}_{i j}\right)^{2}+\lambda \sum_{i=1}^{d_{1}} \sum_{j=1}^{d_{2}}\left|\boldsymbol{W}_{i j}\right|
+    \end{equation}
+
+    with $\lambda>0$. Using $w$ to represent the concatenation of the columns of $W$, we obtain the equivalent vector optimization problem:
+
+    \begin{equation}
+        \operatorname{minimize}_{\boldsymbol{w} \in \mathbb{R}^{d}} f(\boldsymbol{w})+\lambda\|\boldsymbol{w}\|_{1}
+    \end{equation}
+
+    where $f$ is the objective function of problem (3) and we recall that $\|\boldsymbol{w}\|_{1}=\sum_{i=1}^{d}\left|[\boldsymbol{w}]_{i}\right|$.
+
+    \textit{a. The two terms in the objective of (5) (or, equivalently, that of (6)) have different roles in the optimization process. What are these roles?}
+
+    In the objective function of problem (5) (or equivalently, that of (6)), there are two terms, each playing a distinct role in the optimization process:
+
+    \begin{itemize}
+        \item The first term, \(\frac{1}{2 n} \sum_{(i, j) \in \mathcal{S}}\left(\boldsymbol{W}_{i j}-\boldsymbol{X}_{i j}\right)^{2}\), represents the data fidelity or reconstruction error. This term ensures that the recovered matrix \(\boldsymbol{W}\) closely approximates the observed entries of the matrix \(\boldsymbol{X}\) in the subset \(\mathcal{S}\). Minimizing this term encourages the solution to be as close as possible to the observed data.
+
+        \item The second term, \(\lambda \sum_{i=1}^{d_{1}} \sum_{j=1}^{d_{2}}\left|\boldsymbol{W}_{i j}\right|\), is a regularization term that promotes sparsity in the matrix \(\boldsymbol{W}\). The parameter \(\lambda > 0\) controls the trade-off between data fidelity and sparsity. Higher values of \(\lambda\) encourage sparser solutions, potentially at the expense of higher reconstruction error.
+    \end{itemize}
+
+    Thus, the objective function balances between accurately fitting the observed data and promoting sparsity in the solution, which is the essence of sparse matrix recovery.\\
+
+    \textit{b. Proximal Gradient Iteration for Problem (6)}
+
+    The proximal gradient iteration for problem (6) with a constant stepsize \(\alpha\) is outlined as follows:
+
+    \begin{algorithm}
+        \caption{Proximal Gradient Method for Sparse Matrix Recovery}
+        \begin{algorithmic}[1]
+            \State Initialize \(\boldsymbol{w}_0\) and choose a constant stepsize \(\alpha > 0\)
+            \For{\(k = 0, 1, 2, \ldots\) until convergence}
+                \State Update \(\boldsymbol{w}_{k+1}\) by solving the minimization problem:
+                \State \(\boldsymbol{w}_{k+1} \in \text{argmin}_{\boldsymbol{w}} \left\{ f(\boldsymbol{w}_k) + \nabla f(\boldsymbol{w}_k)^T(\boldsymbol{w} - \boldsymbol{w}_k) + \frac{1}{2\alpha} \|\boldsymbol{w} - \boldsymbol{w}_k\|^2 + \lambda \|\boldsymbol{w}\|_1 \right\}\)
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+
+    This iteration method involves a gradient descent step combined with a proximal step that incorporates the \(\ell_1\) norm regularization term, aiming to promote sparsity in the solution \(\boldsymbol{w}_{k+1}\).\\
+
+    \textit{c. Practical Interest of Proximal Gradient in $\ell_{1}$ Regularization}
+
+    The proximal gradient method is particularly beneficial for optimization problems like (6) that include an $\ell_{1}$ regularization term. This term promotes sparsity in the solution, which is essential in many practical applications like signal processing and machine learning for feature selection or noise reduction. The proximal gradient method effectively handles the non-differentiability of the $\ell_{1}$ norm at zero, making it a suitable choice for such problems. In cases like (6), the proximal gradient method is equivalent to the Iterative Shrinkage-Thresholding Algorithm (ISTA), which iteratively shrinks the solution vector's elements towards zero, thereby enhancing sparsity.\\
+
+    \textit{d-i. Relevance of Subgradient Techniques:}
+    Subgradient techniques are relevant for problem (6) due to the $\ell_{1}$ norm, which introduces non-differentiability into the optimization problem. Subgradient methods extend the concept of gradients to functions that are not differentiable, enabling the optimization of such non-smooth functions.\\
+
+    \textit{d-ii. Subgradient Iteration with Constant Stepsize:}
+    A subgradient iteration for problem (6) with a constant stepsize \(\alpha\) can be formulated as follows:
+    \[
+        \boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha \boldsymbol{g}_k,
+    \]
+    where \(\boldsymbol{g}_k\) is a subgradient of the objective function at \(\boldsymbol{w}_k\), including contributions from both the differentiable part \(f(\boldsymbol{w})\) and the non-differentiable part \(\lambda\|\boldsymbol{w}\|_1\).\\
+
+    \textit{d-iii. Solution for Large \(\lambda\):}
+    If the regularization parameter \(\lambda\) is so large that the first part of the objective in problem (5) can be ignored, the solution will essentially minimize the $\ell_{1}$ norm. This leads to a sparse solution, where many components of \(\boldsymbol{w}\) will be exactly zero.\\
+
+    \textit{d-iv. Optimality Condition for Large \(\lambda\):}
+    Under the assumption of a large \(\lambda\), an optimality condition satisfied by the solution is that the subgradient of the $\ell_{1}$ term at \(\boldsymbol{w}^*\) must include the zero vector. This implies that for each component \(w_i^*\) of \(\boldsymbol{w}^*\), either \(w_i^* = 0\) or the sign of \(w_i^*\) corresponds to the negation of the subgradient of the $\ell_{1}$ term at that component.\\
+
+    \section*{Exercise 4: Stochastic gradient}
+
+    In this exercise, we consider a finite-sum minimization problem of the form :
+    $$
+    \underset{w \in \mathbb{R}^{d}}{\operatorname{minimize}} f(w):=\frac{1}{n} \sum_{i=1}^{n} f_{i}(w)
+    $$
+
+    where every function $f_{i}$ is assumed to be $\mathcal{C}^{1}$ and depends solely on the $i$ th element in a dataset $\left\{\left(\boldsymbol{x}_{i}, y_{i}\right)\right\}_{i=1}^{n}$.\\
+
+    \textit{a. Why is the finite-sum structure amenable to applying stochastic gradient techniques?}
+
+    The finite-sum structure of the problem is amenable to stochastic gradient techniques because it allows for the approximation of the gradient using a subset of terms. Instead of computing the gradient of the entire sum, which can be computationally expensive for large \(n\), stochastic gradient methods estimate the gradient using one or a few terms \(f_i\) at each iteration. This approach significantly reduces computational load per iteration and is particularly effective for large datasets.\\
+
+    \textit{b. Stochastic Gradient Iteration with Decreasing Step Size:}
+    The stochastic gradient iteration with a decreasing step size proportional to \(\frac{1}{k+1}\) can be written as:
+    \[
+        \boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \frac{1}{k+1} \nabla f_{i_k}(\boldsymbol{w}_k),
+    \]
+    where \(i_k\) is a randomly selected index from \(\{1, \ldots, n\}\) at iteration \(k\).\\
+
+    \textit{c. Cost of Stochastic Gradient Iteration:}
+    The cost of a stochastic gradient iteration, in terms of accesses to the dataset, is proportional to the number of terms used to estimate the gradient at each iteration. This is typically much lower than the cost of a full gradient descent iteration, which requires accessing all \(n\) terms in the dataset.\\
+
+    \textit{d-i.} Comparing the values of \(f\) for the final iterates of both methods is not a good metric because stochastic gradient does not guarantee monotonically decreasing values of \(f\) due to its random nature. It may not reflect the true convergence behavior or stability of the method.\\
+
+    \textit{d-ii}. A relevant metric for comparison could be the average decrease in the objective function value over several runs, or the number of iterations required to reach a certain threshold of accuracy.\\
+
+    \textit{e-i.} The iteration of batch stochastic gradient with batch size \(n_b\) and constant step size \(\alpha\) is:
+    \[
+        \boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha \frac{1}{n_b} \sum_{i \in I_k} \nabla f_i(\boldsymbol{w}_k),
+    \]
+    where \(I_k\) is a randomly selected subset of \(\{1, \ldots, n\}\) of size \(n_b\).\\
+
+    \textit{e-ii.} Setting \(n_b = r\) can balance the computational load across processors and reduce communication overhead.\\
+
+    \textit{e-iii} If \(r \approx n\), using \(n_b = r\) may lead to inefficient use of computational resources due to high synchronization costs.\\
+
+    \textit{e-iv.} Mini-batching with \(1 < r \ll n\) can provide a good balance between reducing variance in gradient estimates and computational efficiency.\\
+
+    \textit{f. Adam Variant on Stochastic Gradient:}
+    The Adam variant of stochastic gradient differs from the vanilla version in that it incorporates adaptive learning rates for each parameter, based on estimates of first and second moments of the gradients. This results in more stable and efficient convergence, especially for problems with sparse gradients or noisy updates.
+
+\end{document}
