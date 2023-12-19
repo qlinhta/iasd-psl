@@ -1,0 +1,521 @@
+\documentclass[a4paper,6pt]{extarticle}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,mathtools}
+\usepackage{physics}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\AtBeginEnvironment{algorithmic}{\fontsize{6pt}{7pt}\selectfont}
+
+\geometry{
+    top=0.4in,
+    bottom=0.6in,
+    left=0.1in,
+    right=0.1in,
+    headheight=0.3in,
+    headsep=0.1in
+}
+\renewcommand{\familydefault}{\sfdefault}{\fontseries{b}\fontfamily{\sfdefault}\selectfont}
+
+\usepackage{enumitem}
+\setlist{nosep}
+
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{*0}{*0}
+\titlespacing{\subsection}{0pt}{*0}{*0}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+
+\renewcommand{\baselinestretch}{0.5}
+
+\definecolor{color}{HTML}{5D8AA8}
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\renewcommand{\headrulewidth}{0pt} % no line in header area
+\fancyhead[C]{\textbf{Optimisation for Machine Learning -- Quyen L. TA}}
+
+\newcommand{\mybox}[2]{
+    \begin{tcolorbox}[colback=color!5!white, colframe=color!75!black, boxsep=2pt, top=1pt, bottom=1pt, left=2pt, right=2pt, arc=3pt, outer arc=3pt, title={\textbf{#1}}]
+    {\fontsize{5pt}{5pt}\selectfont \textcolor{black}{#2}}
+    \end{tcolorbox}
+}
+
+\begin{document}
+
+    \fontsize{7pt}{8pt}\selectfont
+
+    \begin{multicols}{2}
+
+        \mybox{Gradient Descent}{
+
+            \textbf{First-order necessary:} If \( x^* \) is a local minimum, then \( \nabla f(x^*) = 0 \).
+            \textbf{Second-order necessary:} If \( x^* \) is a local minimum, then \( \nabla f(x^*) = 0 \) and \( \nabla^2 f(x^*) \succeq 0 \).
+            \textbf{Second-order sufficient:} If \( \nabla f(x^*) = 0 \) and \( \nabla^2 f(x^*) \succ 0 \), then \( x^* \) is a local minimum.
+
+            A function $f: R^d \rightarrow R$ is convex if for all $w, v \in R^d$ and for all $\alpha \in [0, 1]$, we have:
+            $f(\alpha w + (1 - \alpha) v) \leq \alpha f(w) + (1 - \alpha) f(v)$.\\
+
+            One choice that works for $C^{1,1}_{L}$ functions is $\alpha_k = \frac{1}{L}$. Suppose that we are at iteration $k$ of gradient descent and $\| \nabla f(w_k) \| \neq 0$. Then, if $\alpha_k = \frac{1}{L}$, we have:$f(w_k) - \alpha_k \|\nabla f(w_k)\|^2 \leq f(w_k) - \frac{1}{2L} \|\nabla f(w_k)\|^2 < f(w_{k})$. More general result: For any $\alpha_k \in (0, \frac{2}{L})$, we have: $f(w_k) - \alpha_k \nabla f(w_k) < f(w_k)$. When $f \in \mathcal{C}^{1, 1}_L$, $\alpha_k = \frac{1}{L}$ is the good step size choice because it guarantees that $f(w^{k+1}) \leq f(w^k) - \frac{1}{2L} \|\nabla f(w^k)\|^2$. (Any $\alpha_k \in (0, \frac{2}{L})$ is also good).In practice, the value of $L$ could be too expensive to compute/unknown/not exist.
+
+            \textbf{Constant Step Size:} $\alpha_k = \alpha$ for all $k \geq 0$. For a small enough $\alpha$, convergence is achieved. Specifically, for $\mathcal{C}^{1, 1}_L$ functions, choose $\alpha \leq \frac{2}{L}$. This method is popular but can be hard to calibrate. \textbf{Diminishing Step Size:} $\alpha_k \rightarrow 0$ as $k \rightarrow \infty$. Examples include $\alpha_k = \frac{\alpha}{k+1}$ or $\alpha_k = \frac{\alpha}{\sqrt{k+1}}$. For large $k$, $\alpha_k \leq \frac{2}{L}$ ensures convergence for $\mathcal{C}^{1, 1}_L$ functions. Less common than constant step size, but useful in stochastic contexts. \textbf{Adaptive Step Size:} Here, $\alpha_k$ adjusts based on $f$, $w^k$, $\nabla f(w^k)$, $\nabla f(w^{k-1})$, etc. An example is $\alpha_k = \frac{\alpha}{\|\nabla f(w^k)\|}$. This is often implemented via a line search. The gradient descent (GD) step is $w^k - \alpha \nabla f(w^k)$. The goal is to find the best $\alpha$ to minimize the function value $f(w_k - \alpha \nabla f(w^k))$.
+
+
+            Exact line search: $\alpha_k = \arg\min_{\alpha \geq 0} f(w^k - \alpha \nabla f(w^k))$. This is expensive to compute. In practice, we replace by an approximate line search.\\
+
+            \textbf{Nonconvex Complexity:}
+            Given $f \in \mathcal{C}_L^{1,1}$ bounded below, applying gradient descent with $\alpha_k=\frac{1}{L}$ ensures:
+            $\min _{0 \leq k \leq K-1}\left\|\nabla f\left(w_k\right)\right\| \leq \mathcal{O}\left(\frac{1}{\sqrt{K}}\right).$
+            This indicates the worst-case complexity of $\mathcal{O}\left(\epsilon^{-2}\right)$, meaning for a given $\epsilon>0$, the gradient norm falls below $\epsilon$ after $\mathcal{O}\left(\epsilon^{-2}\right)$ iterations, under the assumption that $f(\boldsymbol{w}) \geq f_{\text{low}}$ for all $\boldsymbol{w} \in \mathbb{R}^d$.
+            \textbf{Strongly Convex Complexity:}
+            For a strongly convex function $f \in \mathcal{C}_L^{1,1}\left(\mathbb{R}^d\right)$, with a proper step size $\alpha_k$ ensures linear convergence. Specifically, with $\alpha_k=\frac{2}{L+\mu}$, where $\mu$ is the strong convexity constant, it holds that
+            $f(w_k) - f(w^*) \leq \left(1 - \frac{\mu}{L}\right)^k (f(w_0) - f(w^*)),$
+            indicating a convergence rate of $\mathcal{O}\left(\left(1 - \frac{\mu}{L}\right)^k\right)$.
+            \textbf{Convex Complexity:}
+            For a convex function $f \in \mathcal{C}_L^{1,1}\left(\mathbb{R}^d\right)$, applying GD with a suitable step size $\alpha_k$ yields a sublinear convergence rate. With $\alpha_k = \frac{1}{L}$, the convergence is given by $f(w_k) - f(w^*) \leq \frac{2L\|w_0 - w^*\|^2}{k},$
+            resulting in a complexity of $\mathcal{O}\left(\frac{1}{k}\right)$ for reaching an $\epsilon$-close solution to the optimum $w^*$.
+
+            \textbf{Nesterov's Accelerated Gradient (NAG):}\textit{Parameters:} Step size $\alpha_k = \frac{1}{L}$. For $\mu$-strongly convex $f$, $\beta_k = \beta = \sqrt{\frac{L-\mu}{L+\mu}}$. For general convex $f$, $\beta_k$ is adaptive: $t_{k+1} = \frac{1}{2}\left(1 + \sqrt{1 + 4t_k^2}\right)$, $t_0 = 0$, $\beta_k = \frac{t_k - 1}{t_{k+1}}$. \textit{Complexity:} Generic convex $f$: $\min_{0 \leq k \leq K-1} f(w_k) - f^* = \mathcal{O}\left(\frac{1}{K^2}\right)$ if $\beta_k$ is adaptive. $\mu$-strongly convex $f$: At most $\mathcal{O}\left(\frac{L}{\mu}\ln\left(\frac{1}{\epsilon}\right)\right)$ iterations to achieve $f(w_k) - f^* \leq \epsilon$ with constant $\beta$. \textit{Algorithm:}
+            Initialize $w_0 \in \mathbb{R}^d, w_{-1} = w_0$. Then for each $k$: Compute $\alpha_k > 0$ and $\beta_k > 0$. Update $w_{k+1} = w_k - \alpha_k \nabla f(w_k + \beta_k (w_k - w_{k-1})) + \beta_k (w_k - w_{k-1})$.
+
+            \textbf{Heavy Ball Method:}
+            An early form of acceleration in gradient methods proposed by Polyak. It updates as:
+            $ w_{k+1} = w_k - \alpha \nabla f(w_k) + \beta (w_k - w_{k-1}), $
+            using constant stepsize $\alpha$ and momentum $\beta$. It performs a gradient update followed by a momentum step, effective for strongly convex quadratic functions. \textbf{Conjugate Gradient Method:}
+            Solves linear systems and strongly convex quadratic minimization problems. It updates as:
+            $ w_{k+1} = w_k + \alpha_k p_k, \quad p_k = -\nabla f(w_k) + \beta_k p_{k-1}, $
+            with $\alpha_k$ and $\beta_k$ derived from past iterations, without needing $L$ or $\mu$. It offers guaranteed convergence in $d$ iterations for $d$-dimensional problems, with a performance independent of the problem dimension.
+        }
+
+        \mybox{Regularization + Non-smooth function}{
+
+            \textbf{Subgradient Methods:}
+            For convex $f: \mathbb{R}^d \rightarrow \mathbb{R}$, subgradient $g \in \mathbb{R}^d$ at $w$ satisfies $f(z) \geq f(w) + g^T(z - w), \forall z \in \mathbb{R}^n$. The set of all subgradients at $w$, the subdifferential, is denoted $\partial f(w)$.
+
+            \textit{Theorem:} $0 \in \partial f(w) \iff w$ is a minimum of $f$. \textit{Remark:} Subgradients extend to nonconvex functions, but $\partial f(w)$ can be empty.
+            Subgradient method variants incorporate momentum/stochastic elements, but require careful subgradient and stepsize selection.
+
+            \textbf{Subgradient Descent:} Initialize $w_0 \in \mathbb{R}^d$. Repeat for $k \geq 0$: $w_{k+1} \leftarrow w_k - \alpha_k g_k$, where $g_k \in \partial f(w_k)$ and $\alpha_k > 0$.
+
+            \textbf{Regularization in ML} involves adding a term \(\lambda\Omega(\boldsymbol{w})\) to the loss function \(f(\boldsymbol{w})\) to enforce model simplicity. Ridge regularization (\(\ell_2\)-norm penalty) reduces solution variance and can make an objective function strongly convex, enhancing convergence. The \(\ell_0\)-norm promotes sparsity but is non-continuous and combinatorially complex. The \(\ell_1\)-norm, or LASSO, is a continuous, convex surrogate for \(\ell_0\)-norm, favoring sparsity while maintaining desirable mathematical properties.
+
+
+            \textbf{Proximal Gradient Method:}
+            Solves composite optimization: $\min_{w \in \mathbb{R}^d} f(w) + \lambda \Omega(w)$, where $f$ is $C^{1,1}$ and $\Omega$ is convex, nonsmooth. Choose step length $\alpha_k > 0$.
+
+            Iterate:
+            $w_{k+1} = \argmin_{u \in \mathbb{R}^d} \left\{ f(w_k) + \nabla f(w_k)^T (w - w_k) + \frac{1}{2\alpha_k}\|w - w_k\|^2 + \lambda \Omega(u) \right\}$
+
+            \textbf{ISTA Algorithm:}
+            Initialization: \(\boldsymbol{w}_0 \in \mathbb{R}^d\).
+            For \(k=0,1,\ldots\):
+            Step 1. Compute gradient \(\nabla f(\boldsymbol{w}_k)\).
+            Step 2. Compute step length \(\alpha_k > 0\).
+            Step 3. Update \(\boldsymbol{w}_{k+1}\) for each component \(i\) as:
+            \textit{Case 1}: If \([\boldsymbol{w}_k - \alpha_k \nabla f(\boldsymbol{w}_k)]_i < -\alpha_k \lambda\), then \([\boldsymbol{w}_{k+1}]_i = [\boldsymbol{w}_k - \alpha_k \nabla f(\boldsymbol{w}_k)]_i + \alpha_k \lambda\).
+            \textit{Case 2}: If \([\boldsymbol{w}_k - \alpha_k \nabla f(\boldsymbol{w}_k)]_i > \alpha_k \lambda\), then \([\boldsymbol{w}_{k+1}]_i = [\boldsymbol{w}_k - \alpha_k \nabla f(\boldsymbol{w}_k)]_i - \alpha_k \lambda\).
+            \textit{Case 3}: If \(\lvert [\boldsymbol{w}_k - \alpha_k \nabla f(\boldsymbol{w}_k)]_i \rvert \leq \alpha_k \lambda\), then \([\boldsymbol{w}_{k+1}]_i = 0\).
+
+        }
+
+        \mybox{Stochastic Gradient Descent}{
+
+            $f(w) = \frac{1}{n} \sum_{i=1}^n f_i(w) \quad \text{where } f_i \in \mathcal{C}^1 \text{ and } L_i \text{-smooth}. \text{Stochastic gradient descent: } w_{k+1} = w_k - \alpha_k \nabla f_{i_k}(w_k) \quad \text{where } i_k \sim \{1, \dots, n\} \text{ uniformly at random}
+            $
+
+            \textbf{Constant step size}: $\alpha_k = \alpha$ for all $k \geq 0$
+            \textbf{Decreasing step size}: $\alpha_k = \frac{\alpha}{k}$ for all $k \geq 0$ This is a good choice for convex problems because $\sum_{k=0}^\infty \alpha_k = \infty$ and $\sum_{k=0}^\infty \alpha_k^2 < \infty$, so $\lim_{k \to \infty} \alpha_k = 0$ and $\sum_{k=0}^\infty \alpha_k = \infty$. Example: $\alpha_k = \frac{1}{k}$, $\alpha_k = \frac{1}{\sqrt{k}}$, $\alpha_k = \frac{1}{k^\beta}$ where $\beta \in (0, 1)$
+            \textbf{Hybrid step size}: Start with a fixed step size $\alpha_0$ and then switch to a decreasing step size $\alpha_k = \frac{\alpha_0}{k}$ for all $k \geq 1$ while we are not making any progress.
+            \textbf{Bold driver}: $\alpha_{k+1} = \begin{cases}
+                                                      \alpha_k \text{ if } f(w_{k+1}) < f(w_k) \\ \beta \alpha_k \text{ if } f(w_{k+1}) \geq f(w_k)
+            \end{cases}$ where $\beta > 1$ is a constant
+            \textbf{Backtracking line search}: $\alpha_k = \beta^j \alpha_0$ where $\beta \in (0, 1)$ and $j = \min \{ j \in \mathbb{N} \mid f(w_k - \beta^j \alpha_0 \nabla f_{i_k}(w_k)) \leq f(w_k) - \frac{\beta^j}{2} \alpha_0 \| \nabla f_{i_k}(w_k) \|_2^2 \}$ LineSearches do not work well for SGD: checking the function decrease is expensive because we need to access all the data points.
+        }
+
+        \mybox{SGD: Stepsize choice for nonconvex setting}{
+
+            Stochastic gradient (or some variant thereof) is the method of choice for training neural networks, which is usually a nonconvex problem. It is thus natural to ask whether global rates can be obtained for stochastic gradient in the nonconvex setting.
+            Similarly to the strongly convex case, the complexity bounds are affected by a residual term which in turns lead to worse rates than in the deterministic setting.
+
+            Let Assumptions 1, 2 and 3 hold. Suppose that algorithm is run with a constant stepsize \(\alpha_k = \alpha > 0\) where \(\alpha \in \left(0, \frac{1}{L}\right]\). Then, for any \(K \geq 1\),
+            $\mathbb{E}\left[\frac{1}{K}\sum_{k=0}^{K-1}\|\nabla f(x_k)\|^2\right] \leq \alpha L \sigma^2 + \frac{2(f(x_0) - f^*)}{\alpha K}.$
+
+            Let Assumptions 1, 2, 3 hold. Suppose that algorithm is run with a decreasing stepsize sequence \(\{ \alpha_k \}\) such that \(\alpha_k \in (0, \frac{1}{L}]\) for every \(k\), and the sequence satisfies
+            $\sum_{k=0}^{\infty} \alpha_k = \infty \quad \text{and} \quad \sum_{k=0}^{\infty} \alpha_k^2 < \infty.$
+            Then, we have
+            $
+            \mathbb{E}\left[\frac{1}{\sum_{k=0}^{K-1}\alpha_k}\sum_{k=0}^{K-1}\alpha_k\|\nabla f(x_k)\|^2\right] \rightarrow 0 \quad \text{as} \quad K \rightarrow \infty.
+            $.
+
+            Let the assumptions of 1, 2, 3 hold. For any \(K \in \mathbb{N}\), let \(k(K)\) be a random index chosen such that
+            $
+            \mathbb{P}(k(K) = k) = \frac{\alpha_k}{\sum_{k=0}^{K-1}\alpha_k} \quad \forall k = 0, \ldots, K-1.$$
+            Then, $\|\nabla f(x_{k(K)})\| \rightarrow 0$ in probability as $K \rightarrow \infty$, i.e.,
+            $\forall \epsilon > 0, \quad \mathbb{P}(\|\nabla f(x_{k(K)})\| \geq \epsilon) \rightarrow 0 \quad \text{as} \quad K \rightarrow \infty.$
+
+        }
+
+        \mybox{SGD: Convergence Analysis}{
+$f \in \mathcal{C}^1$ and $L$-smooth, $\nabla f$ is $L$-Lipschitz continuous. We have also $\nabla f(w) = \frac{1}{n} \sum_{i=1}^n \nabla f_i(w)$, $w_{k+1} = w_k - \alpha_k \nabla f_{i_k}(w_k)$ where $i_k \sim \{1, \dots, n\}$ uniformly at random. $
+f(w_{k+1}) &\leq f(w_k) + \nabla f(w_k)^T (w_{k+1} - w_k) + \frac{L}{2} \| w_{k+1} - w_k \|_2^2 \\
+&= f(w_k) + \nabla f(w_k)^T \left( -\alpha_k \nabla f_{i_k}(w_k) \right) + \frac{L \alpha_k^2}{2} \| \nabla f_{i_k}(w_k) \|_2^2 \quad (*) \quad \\ \text{because of the randomness in } i_k \text{we cannot find the stepsize which ensures } f(w_{k+1}) \leq f(w_k)$
+At this juncture, denoted as $(*)$, we encounter a key challenge specific to SGD. Unlike in Gradient Descent, where we have deterministic steps, SGD involves a random component in selecting $i_k$. This randomness introduces uncertainty in directly assessing how much $f(w_{k+1})$ decreases compared to $f(w_k)$ at each step.
+
+We can show a decrease on average by taking the expected value with respect to $i_k$ in the last inequality, also think of the gradient $\nabla f_{i_k}(w_k)$ as a random variable.
+
+Assume that at every iteration $k$, $i_k$ is chosen uniformly at random and independently from $i_0, \dots, i_{k-1}$ and satisfies: $\mathbb{E}_{i_k} \left[ \nabla f_{i_k}(w_k) \right] = \nabla f(w_k) \quad \text{unbiased estimate of } \nabla f(w_k)$. $\mathbb{E}_{i_k} \left[ \| \nabla f_{i_k}(w_k) \|_2^2 \right] \leq \| \nabla f(w_k) \|_2^2 + \sigma^2 \quad \text{variance of } \nabla f_{i_k}(w_k) \leftrightarrow Var_{i_k} \left[ \| \nabla f_{i_k}(w_k) \|_2^2 \right] \leq \sigma^2$
+
+To handle this, we analyze the expected decrease of the function value over iterations. We make two assumptions for this purpose:
+\textit{Unbiased Gradient Estimates}: $\mathbb{E}_{i_k}[\nabla f_{i_k}(w_k)] = \nabla f(w_k)$.
+\textit{Bounded Gradient Variance}: $\mathbb{E}_{i_k}[\| \nabla f_{i_k}(w_k) \|_2^2] \leq \| \nabla f(w_k) \|_2^2 + \sigma^2$.
+$f(w_{k+1}) \leq f(w_k) - \alpha_k \nabla f(w_k)^T \nabla f_{i_k}(w_k) + \frac{L \alpha_k^2}{2} \left( \| \nabla f(w_k) \|_2^2 + \sigma^2 \right)$.
+Taking expectation with respect to $i_k$ on both sides, we get:
+$\mathbb{E}_{i_k} \left[ f(w_{k+1}) \right] \leq f(w_k) - \alpha_k \| \nabla f(w_k) \|_2^2 + \frac{L \alpha_k^2}{2} \| \nabla f(w_k) \|_2^2 + \frac{L \alpha_k^2}{2} \sigma^2$. Here, $\mathbb{E}_{i_k} \left[ \nabla f_{i_k}(w_k) \right]$ is the expected gradient, equal to the actual gradient $\nabla f(w_k)$ due to the unbiased gradient assumption. The term $\frac{L \alpha_k^2}{2} \left( \| \nabla f(w_k) \|_2^2 + \sigma^2 \right)$ accounts for the bound on the gradient variance and the noise/variance in the system, respectively. This formulation enables the determination of a step size $\alpha_k$ that ensures $\mathbb{E}_{i_k} \left[ f(w_{k+1}) \right] \leq f(w_k)$.
+}
+
+\mybox{SGD: Strongly Convex Setting Analysis}{
+Given \(\mu\)-strong convexity: \(f(w) \geq f(x) + \nabla f(x)^\top(w-x) + \frac{\mu}{2}\|w-x\|^2\), and \(L \geq \mu\), we get the following lemma: If \(f(x)\) satisfies Taylor's bound and is \(\mu\)-strongly convex, then \(\|\nabla f(x)\|^2 \geq 2\mu (f(x) - f^*)\). \textbf{Proof:}
+By strong convexity, for any \(x, w \in \mathbb{R}^d\): \(f(w) \geq f(x) + \nabla f(x)^\top(w-x) + \frac{\mu}{2}\|w-x\|^2.\)
+Minimize both sides w.r.t. \(w\) to get \(w = w^*\) and setting \(w = x - \frac{1}{\mu}\nabla f(x)\): \(f^* \geq f(x) - \frac{1}{\mu}\|\nabla f(x)\|^2 + \frac{1}{2\mu}\|\nabla f(x)\|^2.\)
+Rearrange to obtain the desired result:
+\(f(x) - f^* \leq \frac{1}{2\mu}\|\nabla f(x)\|^2.\) Multiplying by \(2\mu\) yields: \(\|\nabla f(x)\|^2 \geq 2\mu(f(x) - f^*)\). Results are given in expectation, leveraging the independence across indices. For any index \(i_k\), expectations are nested:
+$\mathbb{E}[f(\mathbf{x}_k)] = \mathbb{E}_{i_0}[\mathbb{E}_{i_1}[\cdots \mathbb{E}_{i_{k-1}}[f(x_k)]]].$
+
+\textbf{SG with constant stepsize}
+Let Assumptions 1, 2, 3 hold. Applied with a constant stepsize
+$
+\alpha_k=\alpha \in\left(0, \frac{1}{L}\right] \forall k \text {. }
+$
+Then, for any $K \geq 1$, we have
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_K\right)-f^*\right] \leq \frac{\alpha L \sigma^2}{2 \mu}+(1-\alpha \mu)^K\left[f\left(\boldsymbol{x}_0\right)-f^*-\frac{\alpha L \sigma^2}{2 \mu}\right] .
+$
+
+\textbf{Proof}. Consider the $k$-th iteration for $k \in\{0, \ldots, K-1\}$. We have
+$
+\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f\left(\boldsymbol{x}_k\right)\right] & \leq-\left(\alpha_k-\frac{L \alpha_k^2}{2}\right)\left\|\nabla f\left(\boldsymbol{x}_k\right)\right\|^2+\frac{L \alpha_k^2}{2} \sigma^2  \leq-2 \mu\left(\alpha_k-\frac{L \alpha_k^2}{2}\right)\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L \alpha_k^2}{2} \sigma^2 = -2 \mu \alpha\left(1-\frac{L \alpha}{2}\right)\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L \alpha}{2} \sigma^2 .
+$
+
+Using that $\alpha \leq \frac{1}{L}$ then gives
+$
+\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f\left(\boldsymbol{x}_k\right)\right] \leq-\mu \alpha\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L a^2}{2} \sigma^2 .
+$
+
+Noticing that $\mathbb{E}_{i_k}\left[f^*-f\left(\boldsymbol{x}_k\right)\right]=f^*-f\left(\boldsymbol{x}_k\right)$, the left-hand side can be modified by adding and subtracting $f^*$, leading to
+$
+\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right]+f^*-f\left(\boldsymbol{x}_k\right) & \leq-\mu \alpha\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L \alpha^2}{2} \sigma^2 \Longrightarrow
+\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right] & \leq(1-\mu \alpha)\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L \alpha^2}{2} \sigma^2 .
+$
+
+Note that $\frac{1}{L} \leq \frac{1}{\mu}$, thus $1-\mu \alpha \in(0,1)$. One final subtraction on both sides gives
+$\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right]-\frac{L \alpha}{2 \mu} \sigma^2 & \leq(1-\mu \alpha)\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L \alpha^2}{2} \sigma^2-\frac{L \alpha}{2 \mu} \sigma^2
+& =(1-\mu \alpha)\left[\left(f\left(\boldsymbol{x}_k\right)-f^*\right)-\frac{L \alpha}{2 \mu} \sigma^2\right] .
+$
+Finally, taking the expected value with respect to every index $i_0, \ldots, i_k$, we arrive at
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right]-\frac{L \alpha}{2 \mu} \sigma^2 \leq(1-\mu \alpha)\left[\mathbb{E}\left[f\left(\boldsymbol{x}_k\right)-f^*\right]-\frac{L \alpha}{2 \mu} \sigma^2\right] .
+$
+By applying this inequality recursively for $k=K-1, \ldots, 0$, we arrive at the desired result. The SGD convergence with constant stepsize \(\alpha\) ensures \( \mathbb{E}[f(w_k) - f^*] \leq \epsilon \) within \( O(\ln(1/\epsilon)) \) iterations, not reaching arbitrarily small \(\epsilon\) due to bias term \(\frac{\alpha L \sigma^2}{2\mu}\). This indicates convergence to an \(\frac{\alpha L \sigma^2}{2\mu}\)-neighborhood around \(f^*\).
+
+
+\textbf{SG with diminishing stepsize} Let Assumptions 1, 2, 3 hold and consider algorithm applied with a decreasing stepsize sequence $\left\{\alpha_k\right\}_k$ satisfying
+$
+\alpha_k=\frac{\beta}{k+\gamma}
+$
+where $\beta>\frac{1}{\mu}$ and $\gamma>0$ is chosen such that $\alpha_0=\frac{\beta}{\gamma} \leq \frac{1}{L}$. Then, for any $K \geq 1$,
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_K\right)-f^*\right] \leq \frac{\nu}{\gamma+K}
+$
+where
+$
+\nu=\max \left\{\gamma\left(f\left(\boldsymbol{x}_0\right)-f^*\right), \frac{\beta^2 L \sigma^2}{2(\beta \mu-1)}\right\} .
+$
+
+\textbf{Proof}. Namely, for any $k \in\{0, \ldots, K-1\}$, we have
+$
+\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f\left(\boldsymbol{x}_k\right)\right] \leq-\left(\alpha_k-\frac{L \alpha_k^2}{2}\right)\left\|\nabla f\left(\boldsymbol{x}_k\right)\right\|^2+\frac{L \alpha_k^2}{2} \sigma^2 .
+$
+For every $k$, we have $1-\frac{L \alpha_k}{2} \geq 1-\frac{L \alpha_0}{2} \geq \frac{1}{2}$. Therefore,
+$
+\mathbb{E}_{i_k}\left[f\left(\boldsymbol{x}_{k+1}\right)-f\left(\boldsymbol{x}_k\right)\right] & \leq-\frac{1}{2} \alpha_k\left\|\nabla f\left(\boldsymbol{x}_k\right)\right\|^2+\frac{L \alpha_k^2}{2} \sigma^2 \leq-\alpha_k \mu\left(f\left(\boldsymbol{x}_k\right)-f^*\right)+\frac{L \alpha_k^2}{2} \sigma^2 .
+$
+By introducing $f^*$ on the left-hand side and taking the expectation over all indices $i_0, \ldots, i_k$, we obtain :
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right] \leq\left(1-\alpha_k \mu\right) \mathbb{E}\left[f\left(\boldsymbol{x}_k\right)-f^*\right]+\frac{L \alpha_k^2}{2} \sigma^2 .
+$
+
+We now prove the desired result by induction. The result is clearly true for $k=0$, since
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_0\right)-f^*\right]=\frac{\gamma}{\gamma+0}\left(f\left(\boldsymbol{x}_0\right)-f^*\right) \leq \frac{\nu}{\gamma+0} .
+$
+Suppose now that result holds at iteration $k$. Then we obtain
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right] & \leq\left(1-\alpha_k \mu\right) \mathbb{E}\left[f\left(\boldsymbol{x}_k\right)-f^*\right]+\frac{L \alpha_k^2}{2} \sigma^2
+& \leq\left(1-\alpha_k \mu\right) \frac{\nu}{\gamma+k}+\frac{L \alpha_k^2}{2} \sigma^2
+& =\left(1-\frac{\mu \beta}{\gamma+k}\right) \frac{\nu}{\gamma+k}+\frac{1}{2} \frac{\beta^2 L \sigma^2}{(\gamma+k)^2}
+& =\frac{\gamma+k-\mu \beta}{(\gamma+k)^2} \nu+\frac{1}{2} \frac{\beta^2 L \sigma^2}{(\gamma+k)^2}
+& =\frac{\gamma+k-1}{(\gamma+k)^2} \nu-\frac{\mu \beta-1}{(\gamma+k)^2} \nu+\frac{1}{2} \frac{\beta^2 L \sigma^2}{(\gamma+k)^2}
+$.
+Using the relation
+$
+(1-\mu \beta) \nu+\frac{\beta^2 L \sigma^2}{2} \leq \frac{(1-\mu \beta) \beta^2 L \sigma^2}{2(\beta \mu-1)}+\frac{\beta^2 L \sigma^2}{2} \leq 0,
+$
+we obtain
+$
+\mathbb{E}\left[f\left(\boldsymbol{x}_{k+1}\right)-f^*\right] & \leq \frac{\gamma+k-1}{(\gamma+k)^2} \nu
+& \leq \frac{\nu}{\gamma+k+1},
+$
+using $(\gamma+k)^2 \geq(\gamma+k+1)(\gamma+k-1)=(\gamma+k)^2-1$. Choosing $k=K-1$ finally proves our result. From the result, we see that choosing a decreasing stepsize results in a sublinear convergence rate, which is worse than the rate for stochastic gradient with constant stepsize. However, note that such a choice enables to reach any neighborhood of the optimal value. The expected excess risk \(\mathbb{E}[f(x_K) - f^*]\) shows a sublinear convergence rate of \(O\left(\frac{1}{K}\right)\). This rate, slower than constant stepsize SGD, allows convergence to the exact optimum \(f^*\) given sufficient iterations.
+
+\textbf{A practical constant stepsize approach} A common practical strategy in machine learning consists in running the algorithm with a value \(\alpha\) until the method stalls (which can indicate that the smallest neighborhood attainable with this stepsize choice has been reached). When that occurs, the stepsize can be reduced, and the algorithmic run can continue until it stalls again, then the stepsize will be further reduced, et cetera (say \(\alpha, \alpha/2, \alpha/4,\) etc.). This process can lead to convergence guarantees, in that it is possible to reach any neighborhood of the optimal value \(f^*\). However, the convergence rate is sublinear, in the sense that $\mathbb{E}[f(x_K) - f^*] \leq O\left(\frac{1}{K}\right).$
+
+This choice of stepsize is adaptive, in that it is designed to reach closer and closer neighborhoods as the algorithm proceeds. However, it requires the method to be able to detect stalling, and act upon it.
+
+In the original stochastic gradient method (proposed by Robbins and Monro in 1951), the stepsize sequence was required to satisfy $\sum_{k=0}^{\infty} \alpha_k = \infty \quad \text{and} \quad \sum_{k=0}^{\infty} \alpha_k^2 < \infty,$
+which implies that \(\alpha_k \to 0\). In our next result, we thus consider the case of diminishing stepsizes.
+}
+
+\mybox{Batch Stochastic Gradient}{
+
+BatchSG: $w_{k+1} = w_k - \frac{\alpha_k}{|S_k|} \sum_{i \in S_k} \nabla f_i(w_k)$ where $S_k \subset \{1, \dots, n\}$ is a subset of the data points of size $|S_k| = m$. $|S_k| = m$ is a hyperparameter. $m = 1$ is SGD, $m = n$ is GD.
+We have 2 regimes: \textit{Large batch regime}: $1 \ll |S_k| \ll n$: $|S_k|$ is large enough to approximate the gradient well but small enough to be faster than GD. Remove most of the variance in the algorithm less noise so it converges in a good neighbourhood of the optimum. But it is more expensive for each iteration, behaviour is closer to GD. \textit{Small batch regime}: $1 \leq |S_k| \ll n$: Per-iteration cost is much cheaper than GD, a little bit more expensive than SGD. Unlike SGD, possible to evaluate the gradient $\nabla f(w_k)$ in parallel. More noise, but faster convergence than SGD.
+
+\textbf{Convergence rate for BatchSG}:
+Assumptions: (1) $\mathbb{E}_{S_k} \left[ \nabla f_{S_k}(w_k) \right] = \nabla f(w_k)$. (2) $\mathbb{E}_{S_k} \left[ \| \nabla f_{S_k}(w_k) \|_2^2 \right] \leq \| \nabla f(w_k) \|_2^2 + \sigma^2$. Under that assumption:
+$
+\mathbb{E}_{i_k} \left[ \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(w_k) \right] = \nabla f(w_k) \quad \text{and} \quad \mathbb{E}_{i_k} \left[ \left\| \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(w_k) \right\|_2^2 \right] \leq \frac{1}{|S_k|^2} \sum_{i \in S_k} \mathbb{E}_{i_k} \left[ \| \nabla f_i(w_k) \|_2^2 \right] \leq \| \nabla f(w_k) \|_2^2 + \frac{\sigma^2}{|S_k|}
+$
+So if $f$ is $\mu$-strongly convex and $L$-smooth, then:
+With $m_b = |S_k| = 1$:
+$
+\mathbb{E}_{i_k}[f(w_{k+1})] \to f(w^*), f(w^*) + \frac{L \alpha}{2 \mu} \sigma^2.
+$
+BatchSG with $m_b = |S_k| = m$:
+$
+\mathbb{E}_{i_k}[f(w_{k+1})] \to f(w^*), f(w^*) + \frac{L \alpha}{2 \mu} \frac{\sigma^2}{m}
+$
+}
+\end{multicols}
+
+\begin{multicols}{2}
+
+\mybox{Variance reduction techniques}{
+
+\textbf{Using batch size} Under the assumptions that the stochastic gradients are unbiased and have bounded variance, and that the function \( f \) is Lipschitz continuous with constant \( L \), the variance of a mini-batch stochastic gradient estimate using \( n_b \) samples drawn with replacement satisfies
+$\mathbb{E}_S\left[\left\| \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(x_k) \right\|^2\right] \leq \frac{\sigma^2}{n_b} + \|\nabla f(x_k)\|^2.$
+
+\textit{Proof.} The variance term can be expressed as the expected squared norm difference between the mini-batch stochastic gradient and the full gradient, which by assumption is bounded above by \( \sigma^2 \). Considering the mini-batch stochastic gradient, we observe
+$\mathbb{E}_S\left[\left\| \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(x_k) \right\|^2\right] - \|\mathbb{E}_S\left[ \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(x_k)\right]\|^2,$
+which is the variance of the mini-batch gradient. By the i.i.d. assumption on the samples,
+$\mathbb{E}_{S_k}\left[\left\| \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(x_k) \right\|^2\right] - \left\| \mathbb{E}_{S_k}\left[ \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(x_k) \right] \right\|^2 = \frac{1}{n_b^2}\left(\mathbb{E}_i\left[\|\nabla f_i(x_k)\|^2\right] - \|\mathbb{E}_i[\nabla f_i(x_k)]\|^2\right) \leq \frac{\sigma^2}{n_b}, (*),$
+and since the expected value of the mini-batch gradient is equal to the full gradient,$\mathbb{E}_S\left[ \frac{1}{|S_k|} \sum_{i \in S_k} \nabla f_i(x_k)\right] = \nabla f(x_k).$
+Hence, we obtain the result in (*). Using a mini-batch reduces the variance term by a factor of \( n_b \), leading to the convergence improvement analogous to that of full-batch methods:$\mathbb{E}[f(x_k) - f^*] \leq \frac{\alpha L \sigma^2}{2\mu} + (1 - \alpha \mu)^k \left[ f(x_0) - f^* - \frac{\alpha L \sigma^2}{2\mu b} \right].$
+
+This result demonstrates that a batch method, with a given number of iterations and step size, can reach a closer neighborhood of the optimal objective function than standard SGD. For Algorithm 1 to achieve a similar result, the step size should be adjusted to \(\frac{\alpha}{n_b}\), yielding:
+$\mathbb{E}[f(x_k) - f^*] \leq \frac{\alpha L \sigma^2}{2 \mu n_b} + \left(1 - \frac{\alpha \mu}{n_b}\right)^k \left[f(x_0) - f^* - \frac{\alpha L \sigma^2}{2 \mu n_b}\right],$
+indicating mini-batch SGD requires \(n_b\) times more iterations than SGD to reach an equivalent function value, but at \(n_b\) times less computational cost per iteration. However, a larger step size cannot compensate for the increased cost per iteration in batch methods. More expensive per iteration than SGD but reduce the variance of the gradient estimate and the right batch size depends on the architecture/hardware.
+
+\textbf{Iterate averaging}
+
+The iterates of a stochastic gradient sequence can be observed to oscillate around minimizers: this motivated the use of averaging techniques to limit this oscillating behavior. The basic idea consists in maintaining a sequence of average iterates during a run of stochastic gradient. Considering our basic stochastic gradient setup with uniformly sampled indexes, this would result in the following iteration
+$\begin{cases}
+x_{k+1} = x_k - \alpha_k \nabla f_{i_k}(x_k) \\
+\tilde{x}_{k+1} = \frac{1}{k+1} \sum_{j=0}^{k} x_j.
+\end{cases}
+$
+This averaging process has been widely used in stochastic approximation methods and in stochastic programming, leading to so-called \textit{ergodic convergence rates}. Under appropriate assumptions on the stepsize and the objective function, similar rates can be established for the recursion (3.1.8). Moreover, the average is provably a more robust solution than the last iterate returned by the method. Overall, with careful parameter selection, averaging can prove to be a powerful paradigm; note that, in practice, maintaining such an average iterate can be prone to cancellation or numerical errors.
+
+$w_{k+1} = w_k - \alpha_k g_k$ where $g_k = \frac{1}{n} \sum_{i=1}^n g_{k, i}$ and $g_{k, i} = \nabla f_i(w_k)$. So there is extra storage cost of parameters and computation. The average sequence $\{ \bar{w}_k \}_{k \geq 0}$ has better convergence properties in convex settings. $\{ \bar{w}_{k+1} \} = \frac{(k+1) \bar{w}_k + w_{k+1}}{k+2}$ Update the average sequence $\{ \bar{w}_k \}_{k \geq 0}$ at each iteration. 2 sequences to store and update. Can be numerically difficult to compute $\bar{w}_k$ for large $k$.
+
+\textbf{Gradient aggregation methods}
+We now turn to gradient aggregation methods, that have attracted a lot of attention in the learning and optimization community because of the linear convergence rates that can be shown for such methods. Their main paradigm consists in computing a full gradient step at regular intervals, in order to correct high-variance components that could arise from the stochastic gradient update. Many variants on this idea have been proposed over the last decade; we review below the most significant ones, and provide an algorithmic sketch of these methods.
+
+For the rest of this section, we assume that the function \( f \) is Lipschitz continuous and \(\mu\)-strongly convex. Recall that under these assumptions, we are able to show a sublinear rate of decrease for the function value, in \( O\left(\frac{1}{k}\right) \).
+
+\textbf{SVRG} The first gradient aggregation method we study is called SVRG, for Stochastic Variance-Reduced Gradient. It proceeds in cycles of \( m \) sub-iterations: at the beginning of every major iteration, a full gradient \( \nabla f(x_k) \) is computed, then \( m \) iterations involving a single additional sampled gradient are performed. That is, we set \( \tilde{x}_0 := x_k \) and \( \tilde{x}_{j+1} = \tilde{x}_j - \alpha g_j \), where $g_k = \nabla f_{i_k}(\tilde{x}_j) - \nabla f_{i_k}(x_k) + \nabla f(x_k).$
+The use of this estimate leads to a better bound for the variance of the stochastic gradient especially when \( \tilde{x}_j \) is close to \( x_k \). Moreover, one can show that it indeed achieves a linear rate in terms of iterations.
+
+Under assumption 1, 2, 3, suppose that the stepsize \( \alpha \) and the length of the inner loop \( m \) used in Algorithm 2 satisfy $\rho := \frac{1}{1 - 2\alpha L} \left( \frac{1}{\mu\alpha} + 2L\alpha \right) \in (0, 1).$
+Then, \mathbb{E}[\|f(x_k) - f^*\|] \leq \rho^k \left( \|f(x_0) - f^*\| \right).$
+
+\textbf{Algorithm 2: Basic SVRG method.}
+Initialization: \( x_0 \in \mathbb{R}^d, \alpha > 0, m \in \mathbb{N} \).
+for \( k = 0, 1, \ldots \) do
+Compute the full gradient \( \nabla f(x_k) \).
+Set \( \tilde{x}_0 := x_k \).
+for \( j = 0, \ldots, m - 1 \) do
+Draw a random index \( i_j \) uniformly from \( \{1, \ldots, n\} \).
+Set \( g_j := \nabla f_{i_j}(\tilde{x}_j) - \nabla f_{i_j}(x_k) + \nabla f(x_k) \).
+Set \( \tilde{x}_{j+1} := \tilde{x}_j - \alpha g_j \).
+end
+Draw \( j \) uniformly at random in \( \{0, \ldots, m - 1\} \) and set \( x_{k+1} = \tilde{x}_{j+1} \).
+end
+
+One iteration of SVRG is comparable in cost to a full gradient iteration, because \( 2m + n \) gradients are required per iteration. However, it can still be faster than gradient descent, because of the intrinsic randomness.
+
+The SVRG method can be quite efficient in applications that require a high accuracy (i.e. \( \mathbb{E}[\|f(x_k) - f^*\|] \leq \epsilon \) with a small \( \epsilon > 0 \)); however, for the first epochs, one generally notices that the stochastic gradient method is more efficient.
+
+[+] Reduce the variance
+[+] Good theorical gradient. For strongly convex function $\mathbb{E} \left[ f(w_k) - f(w^*) \right] \leq (1- \alpha \mu)^k \left( f(w_0) - f(w^*) \right)$ exponential convergence rate.
+[-] Require to compute a full gradient every m steps and store it.
+
+\textbf{SAGA} Unlike SVRG, the SAGA method does not operate in cycles, and only requires one component gradient per iteration past the first one. It does, however, maintain a gradient estimate formed by \( n \) stochastic gradients evaluated at different points throughout the optimization process. Indeed, at every iteration, the method has access to a value of every component gradient \( \nabla f_{i} \) at some previous iterate \( x_{i[j]} \). It then selects an index \( j \) at random and defines $g_k := \nabla f_{i_k}(x_k) - \nabla f_{i_k}(x_{i[j]}) + \frac{1}{n} \sum_{i=1}^{n} \nabla f_i(x_{i[j]}).$
+
+\textbf{Algorithm 3: SAGA method.}
+Initialization: \( x_0 \in \mathbb{R}^d, \alpha > 0 \).
+for \( i = 1, \ldots, n \) do
+Compute \( \nabla f_i(x_0) \).
+Set \( \nabla f_i(x_{i[j]}) := \nabla f_i(x_0) \).
+end
+for \( k = 0, \ldots \) do
+Draw a random index \( j \) from \( \{1, \ldots, n\} \).
+Compute \( \nabla f_j(x_k) \).
+Set \( g_k := \nabla f_j(x_k) - \nabla f_j(x_{j[k]}) + \frac{1}{n} \sum_{i=1}^{n} \nabla f_i(x_{i[j]}) \).
+Update \( \nabla f_j(x_{j[k]}) = \nabla f_j(x_k) \).
+Set \( x_{k+1} = x_k - \alpha g_k \).
+end
+
+The typical rate of SAGA is given below, in terms of convergence to the iterates.
+
+\textbf{Theorem 3.1.2} Under Assumptions 2.3.1 and 2.3.3, suppose that the stepsize of Algorithm 3 is chosen as \( \alpha = \frac{1}{\mu(n+L)} \). Then,
+$\mathbb{E}[\|x_k - x^*\|^2] \leq \left( 1 - \frac{\mu}{2(\mu + L)} \right)^k \|x_0 - x^*\|^2 + \frac{2n}{\mu(n + L)}(f(x_0) - f^*).$
+Note that the strong convexity constant is not needed here, as a step of \( \alpha = \frac{1}{3L} \) would also yield linear convergence.
+
+Despite their strong guarantees, gradient aggregation methods have not been widely exploited in practice. Due to the cost of full gradient evaluations, that can remain too prohibitive for certain applications, in particular, variance reduction methods can be inefficient for training of neural network architectures; on the other hand, promising results have been obtained in other settings such as reinforcement learning.
+
+[+] Convergence theory of SAGA is as good as SVRG. Less computation of full gradient (only initialisation), but big memory requirement.
+[-] Need to store all the gradients $\{ \nabla f_i \}_{i=1}^n$ and form the average $\nabla f(w_k) = \frac{1}{n} \sum_{i=1}^n \nabla f_i(w_k)$ at each iteration.
+
+Gradient Aggregation summary:
+- Good theorical properties; converge faster than SGD in term of number of iterations (epoch)
+- Not very popular in Deep Learning or large datasets setting because of the memory requirement.
+- SAGA is implemented in scikit-learn. Use in Reinforcement Learning.
+}
+
+\mybox{Consensus optimization}{
+
+In this setup, we consider a dataset that is split across \( m \) entities called agents. Every agent uses its own data to train a certain learning model parameterized by a vector in \( \mathbb{R}^d \). To this end, each agent not only has its own function \( f^{(i)} \), but also its own copy of the model parameters \( \mathbf{w}^{(i)} \). The optimization problem at hand considers a master iterate \( \mathbf{u} \), and attempts to reach consensus between all the agents.
+$
+& \underset{\mathbf{w}^{(1)}, \ldots, \mathbf{w}^{(m)}}{\text{minimize}}
+& & \sum_{i=1}^{m} f^{(i)}(\mathbf{w}^{(i)})
+& \text{subject to }
+& & \mathbf{u} = \mathbf{w}^{(i)} \quad \forall i = 1, \ldots, m.$
+This problem is a proxy for \( \underset{\mathbf{w} \in \mathbb{R}^d}{\text{minimize}} \sum_{i=1}^{m} f^{(i)}(\mathbf{w}) \), but the latter problem cannot be solved by a single agent since every agent has exclusive access to its data by design. The formulation models the fact that all agents are involved in computing \( \mathbf{u} \) by acting on \( \mathbf{w}_i \). It is possible to apply ADMM to problem by setting
+\(
+\mathbf{u} = [\mathbf{w}^{(1)} \dots \mathbf{w}^{(m)}] \in \mathbb{R}^{md}, \quad \mathbf{v} = \mathbf{u} \in \mathbb{R}^d.
+\)
+\textbf{Generalization}: The idea behind the formulation can be extended to the case of data spread over a network, represented by a graph \( G = (V, \mathcal{E}) \): every vertex \( s \in V \) of the graph represents an agent, while every edge \( (s, s') \in \mathcal{E} \) represents a channel of communication between two agents in the graph. Letting \( \mathbf{w}^{(s)} \in \mathbb{R}^d \) and \( f^{(s)}: \mathbb{R}^d \to \mathbb{R} \) represent the parameter copy and objective function for agent \( s \) respectively, the consensus optimization problem can be written as:$
+& \underset{\{\mathbf{w}^{(s)}\} \in (\mathbb{R}^d)^{|V|}}{\text{minimize}}
+& & \sum_{s \in V} f^{(s)}(\mathbf{w}^{(s)})
+& \text{ subject to }
+& & \mathbf{w}^{(s)} = \mathbf{w}^{(s')} \quad \forall (s, s') \in \mathcal{E}.$
+
+When the graph is fully connected, i.e., all agents communicate, this problem reduces to an unconstrained problem. However, in general, the solutions of this problem are much difficult to identify, and one must work through minimizing the objective and satisfying the so-called consensus constraints.
+
+}
+
+\mybox{Distributed and constrained optimization}{
+
+Linear constraints and dual problem: $    \text{minimize } f(\mathbf{w}) \text{ subject to } A\mathbf{w} = \mathbf{b}$ where \( A \in \mathbb{R}^{m \times d} \) and \( \mathbf{b} \in \mathbb{R}^m \). For simplicity, we will assume that the feasible set \( \{ \mathbf{w} \in \mathbb{R}^d | A\mathbf{w} = \mathbf{b} \} \) is not empty. The Lagrangian function of problem is given by $L(\mathbf{w}, \mathbf{z}) := f(\mathbf{w}) + \mathbf{z}^\top (A\mathbf{w} - \mathbf{b})$. The dual problem is the maximization problem $\text{maximize } \min_{\mathbf{w} \in \mathbb{R}^d} L(\mathbf{w}, \mathbf{z})$ where the function \( z \mapsto \min_{\mathbf{w} \in \mathbb{R}^d} L(\mathbf{w}, \mathbf{z}) \) is called the dual function of the problem. Unlike the primal problem, the dual problem is always concave, which facilitates its resolution by standard optimization techniques. The goal is then to solve the dual problem in order to get the solution of the primal problem, thanks to properties such as the one below.
+\textbf{Assumption}: We suppose that strong duality holds between problem above and its dual, that is $\min_{\mathbf{w} \in \mathbb{R}^d} \max_{\mathbf{z} \in \mathbb{R}^m} L(\mathbf{w}, \mathbf{z}) = \max_{\mathbf{z} \in \mathbb{R}^m} \min_{\mathbf{w} \in \mathbb{R}^d} L(\mathbf{w}, \mathbf{z})$. A sufficient condition for Assumption is that \( f \) be convex, but this is not necessary.
+
+\textbf{Dual algorithms}: \textit{Dual ascent}:The dual ascent method is implicitly a subgradient method applied to the dual problem (which we recall is a maximization problem). At every iteration, it starts from a primal-dual pair \( (\mathbf{w}_k, \mathbf{z}_k) \) and performs the following iteration: $\mathbf{w}_{k+1} &= \argmin_{\mathbf{w} \in \mathbb{R}^d} L(\mathbf{w}, \mathbf{z}_k) \text{ then }
+\mathbf{z}_{k+1} &= \mathbf{z}_k + \alpha_k(A\mathbf{w}_{k+1} - \mathbf{b})$
+where \( \alpha_k > 0 \) is a stepsize for the dual ascent step, and \( A\mathbf{w}_{k+1} - \mathbf{b} \) is a subgradient for the dual function \( z \mapsto \min_{\mathbf{w} \in \mathbb{R}^d} L(\mathbf{w}, \mathbf{z}) \) at \( \mathbf{z}_k \).
+\textit{Augmented Lagrangian}: The dual ascent method generally has weak convergence guarantees. The augmented Lagrangian of problem is the function on \( \mathbb{R}^d \times \mathbb{R}^m \times \mathbb{R}_+ \) defined by $L^a(\mathbf{w}, \mathbf{z}; \lambda) := f(\mathbf{w}) + \mathbf{z}^\top (A\mathbf{w} - \mathbf{b}) + \frac{\lambda}{2}\|A\mathbf{w} - \mathbf{b}\|^2.$ Augmented Lagrangians thus are a family of functions parameterized by \( \lambda > 0 \), that put more emphasis on the constraint violation as \( \lambda \) grows.
+
+The augmented Lagrangian algorithm, also called method of multipliers, performs the following iteration $\mathbf{w}_{k+1} &= \argmin_{\mathbf{w} \in \mathbb{R}^d} L^a(\mathbf{w}, \mathbf{z}_k; \lambda),
+\mathbf{z}_{k+1} &= \mathbf{z}_k + \lambda (A\mathbf{w}_{k+1} - \mathbf{b}).$ In this algorithm, $\lambda$ is constant and used as a constant stepsize: many more sophisticated choices of both the augmented Lagrangian function and the stepsizes have been proposed. In general, the advantages of augmented Lagrangian techniques are that the subproblems defining $w_{k+1}$ become easier to solve (thanks to regularization) and that the overall guarantees on the primal-dual pair are stronger.
+
+\textit{ADMM: Alternated Direction Method of Multipliers}. Suppose that we consider a linearly constrained problem with a separable form: $\min_{\mathbf{u} \in \mathbb{R}^d, \mathbf{v} \in \mathbb{R}^2} f(\mathbf{u}) + g(\mathbf{v}) \quad \text{subject to} \quad A\mathbf{u} + B\mathbf{v} = \mathbf{c}$ where $A \in \mathbb{R}^{m \times d}, B \in \mathbb{R}^{d \times 2m}$ and $\mathbf{c} \in \mathbb{R}^m$. In that case, for any $\lambda > 0$, the augmented Lagrangian of problem (5.3.4) has the form $L^a(\mathbf{u}, \mathbf{v}, \mathbf{z}; \lambda) = f(\mathbf{u}) + g(\mathbf{v}) + \mathbf{z}^\top (A\mathbf{u} + B\mathbf{v} - \mathbf{c}) + \frac{\lambda}{2}\|A\mathbf{u} + B\mathbf{v} - \mathbf{c}\|^2$
+
+The ADMM iteration exploits the separable nature of the problem by computing the values $\mathbf{u}$ and $\mathbf{v}$ independently. Starting from $(\mathbf{w}_k, \mathbf{v}_k, \mathbf{z}_k)$, the ADMM counterpart to iteration: $\mathbf{u}_{k+1} &= \argmin_{\mathbf{u} \in \mathbb{R}^d} L^a(\mathbf{u}, \mathbf{v}_k; \mathbf{z}_k; \lambda),
+\mathbf{v}_{k+1} &= \argmin_{\mathbf{v} \in \mathbb{R}^2} L^a(\mathbf{u}_{k+1}, \mathbf{v}, \mathbf{z}_k; \lambda),
+\mathbf{z}_{k+1} &= \mathbf{z}_k + \lambda(A\mathbf{u}_{k+1} + B\mathbf{v}_{k+1} - \mathbf{c}).$
+
+}
+
+\mybox{Coordinate Descent Methods}{
+
+Solve $\min f(\mathbf{w}), \mathbf{w} \in \mathbb{R}^d, f \in C^1(\mathbb{R}^d)$ by updating one $w_j$ at a time using $\nabla f(\mathbf{w}) = \sum_{j=1}^{d} \nabla_j f(\mathbf{w})\mathbf{e}_j$, where $\nabla_j f$ is the $j$-th partial derivative and $\mathbf{e}_j \in \mathbb{R}^d$ is the $j$-th basis vector. Unlike the stochastic gradient, the coordinate descent approach replaces the full gradient by a step along a coordinate gradient. \textbf{Algorithm:}\textit{Initialization:} $\mathbf{w}_0 \in \mathbb{R}^d$.
+\textit{for} $k = 0, 1, \ldots$ \textit{do}
+Step 1: Select a coordinate index $j_k \in \{1, \ldots, d\}$.
+Step 2: Compute a step length $\alpha_k > 0$.
+Step 3: Set $\mathbf{w}_{k+1} = \mathbf{w}_k - \alpha_k \nabla_{j_k} f(\mathbf{w}_k)e_{j_k}$.
+\textit{end for}. The variants of coordinate descent are mainly identified by the way they select the coordinate sequence $\{j_k\}$. There exist numerous rules for choosing the coordinate index, among which: \textbf{Cyclic:} Select the indices by cycling over $\{1, \ldots, d\}$ in that order. After $d$ iterations, all indices have been selected. \textbf{Randomized cyclic:} Cycle through a random ordering of $\{1, \ldots, d\}$, that changes every $d$ steps. \textbf{Randomized:} Draw $j_k$ at random in $\{1, \ldots, d\}$ at every iteration. The last two strategies are those for which the strongest results can be obtained.
+
+\textbf{Block coordinate descent} Rather than using a single index, it is possible to select a subset of the coordinates (called "block" in the literature). The $k$th iteration of such a \textbf{block coordinate descent} algorithm thus is
+$\mathbf{w}_{k+1} = \mathbf{w}_k - \alpha_k \sum_{j \in B_k} \nabla_{j} f(\mathbf{w}_k)e_{j}$ where $B_k \subseteq \{1, \ldots, d\}$.
+\textbf{Assumption}: The objective function \( f \) in (5.1.1) is \( C^1 \) and \(\mu\)-strongly convex, with \( f^* \) as its minimum. Moreover, for every \( j = 1, \ldots, d \), the partial derivative \( \nabla_j f \) is \( L_j\)-Lipschitz continuous, i.e.,
+$\forall w \in \mathbb{R}^d, \ h \in \mathbb{R}, \ \left| \nabla_j f(w + he_j) - \nabla_j f(w) \right| \leq L_j |h|.$
+
+\textbf{Theorem}: Suppose that assumption above holds, and that Algorithm is applied to problem with \( \alpha_k = \frac{1}{L_{\text{max}}} \) for all \( k \) and \( j_k \) being drawn uniformly at random in \( \{1, \ldots, d\} \). Then, for any \( K \in \mathbb{N} \), we have $\mathbb{E} \left[ f(w_K) - f^* \right] \leq \left( 1 - \frac{\mu}{dL_{\text{max}}} \right)^K (f(w_0) - f^*).$ Other results have been established in the convex and nonconvex settings, under additional assumptions. In all cases, properties on the partial derivatives are required.
+}
+
+\mybox{SGD for Deep Learning}{
+
+Deep learning optimization often employs stochastic gradient (SG) methods, not specifically tailored to any architecture but adaptable to general finite-sum problems. In the basic SG scheme, weights are updated as \(\boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha \boldsymbol{g}_k\), with \(\alpha\) as the learning rate and \(\boldsymbol{g}_k\) representing a stochastic estimator for the gradient, derived from either a single component or a batch.
+
+A more nuanced approach introduces a framework where weights are updated via \(\boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha \boldsymbol{m}_k \oslash \boldsymbol{v}_k\), with \(\boldsymbol{m}_k\) and \(\boldsymbol{v}_k\) as d-dimensional vectors and \(\oslash\) denoting element-wise division. This framework can be seen as a generalization of the SG update, simplifying to the classical SG when \(\boldsymbol{m}_k = \boldsymbol{g}_k\) and \(\boldsymbol{v}_k\) is the vector of ones.
+
+\textbf{Momentum in Stochastic Gradient Descent:}
+Building on the concept of momentum from accelerated methods, the SG update incorporates an inertia component, effectively combining the gradient step with the previous weight displacement. This modification, defined as \(\boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \alpha (1 - \beta_1) \boldsymbol{g}_k + \alpha \beta_1 (\boldsymbol{w}_k - \boldsymbol{w}_{k-1})\), introduces the momentum coefficient \(\beta_1\), enhancing the algorithm's ability to navigate the optimization landscape by amplifying productive directions and diminishing adverse ones.
+
+This momentum-augmented method fits within the general framework by setting \(\boldsymbol{v}_k\) to the unit vector and recursively defining \(\boldsymbol{m}_k\) with an initial condition of zero and updating it with the momentum-modulated gradient.
+
+Incorporating momentum is particularly effective in deep learning settings, where navigating through complex, high-dimensional landscapes is a key challenge. The momentum method's propensity to accumulate gradients in 'good' directions over iterations, while canceling out the 'bad' ones, makes it a powerful tool for training neural networks.
+
+\textbf{AdaGrad}
+The AdaGrad (Adaptive Gradient) algorithm, introduced in 2011, dynamically adjusts the learning rate for each parameter. This method is particularly effective for handling sparse data and varying scales among different parameters.
+
+The core idea behind AdaGrad is to scale the gradient inversely proportional to the square root of the sum of all past squared gradients. This approach allows for an adaptive learning rate, improving performance on problems with sparse gradients (like those in recommender systems). The key equations are as follows:
+
+Let $\boldsymbol{g}_k$ represent the gradient at iteration $k$, and $\boldsymbol{w}_k$ the weights. AdaGrad updates these weights as:
+$\boldsymbol{r}_k = \boldsymbol{r}_{k-1} + \boldsymbol{g}_k \odot \boldsymbol{g}_k, \quad \text{with} \quad \boldsymbol{r}_{-1} = \mathbf{0},
+\boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \frac{\alpha}{\sqrt{\boldsymbol{r}_k + \eta}} \odot \boldsymbol{g}_k$
+
+Here, $\alpha$ is the initial learning rate, $\eta$ is a small constant added for numerical stability (often set to a value like $10^{-8}$), and $\odot$ denotes element-wise multiplication. The term $\sqrt{\boldsymbol{r}_k + \eta}$ serves as an element-wise adaptive learning rate, modifying the step size for each parameter based on the magnitude of its gradients.
+
+\textit{Remark:} AdaGrad's adaptive nature makes it particularly suitable for problems with sparse gradients, but its continual reduction of the learning rate can lead to early stagnation in some scenarios.
+
+\textbf{RMSProp (Root Mean Square Propagation)} is an adaptive learning rate method, enhancing AdaGrad's approach to handling diminishing learning rates. It adjusts the learning rate for each parameter, using a moving average of squared gradients. The algorithm is defined as follows:
+
+Given the gradient $\boldsymbol{g}_k$ at iteration $k$ and the decay rate $\lambda \in (0,1)$, RMSProp updates the running average of squared gradients $\boldsymbol{r}_k$ as:
+$\boldsymbol{r}_k = (1 - \lambda) \boldsymbol{r}_{k-1} + \lambda \boldsymbol{g}_k \odot \boldsymbol{g}_k, \quad \text{with} \quad \boldsymbol{r}_{-1} = \mathbf{0}$
+The weight update rule is then given by:
+$\boldsymbol{w}_{k+1} = \boldsymbol{w}_k - \frac{\alpha}{\sqrt{\boldsymbol{r}_k + \eta}} \odot \boldsymbol{g}_k$
+Here, $\alpha$ is the learning rate, and $\eta$ (a small constant) ensures numerical stability. The element-wise division by $\sqrt{\boldsymbol{r}_k + \eta}$ provides an adaptive learning rate for each parameter.
+
+\textit{Remark:} RMSProp addresses the rapid decrease in learning rates experienced in AdaGrad, making it more effective for training deep neural networks. It is particularly well-suited for problems with non-stationary objectives or those with noisy and sparse gradients.
+
+\textbf{Adam (Adaptive Moment Estimation, 2013)} has been one of the most popular stochastic gradient technique in pratice. This method can be viewed as combining the idea of momentum together with scaling: scaling will be performed according to the past gradients, and the search direction will also include pas gradient information. The ADAM iteration corresponds to applying with
+$
+\boldsymbol{m}_k=\frac{\left(1-\beta_1\right) \sum_{j=0}^k \beta_1^{k-j} \boldsymbol{g}_j}{1-\beta_1^{k+1}}
+$
+for $\beta_1 \in(0,1)$. This is indeed a momentum-type iteration, since we can obtain $\boldsymbol{m}_k$ from $\boldsymbol{m}_{k-1}$ and $\boldsymbol{g}_k$ through the formula
+$
+\boldsymbol{m}_k=\beta_1 \frac{1-\beta_1^k}{1-\beta_1^{k+1}} \boldsymbol{m}_{k-1}+\frac{1-\beta_1}{1-\beta_1^{k+1}} \boldsymbol{g}_k .
+$
+The other component of the ADAM update is given by
+$
+\boldsymbol{v}_k=\sqrt{\frac{\left(1-\beta_2\right) \sum_{j=0}^k \beta_2^{k-j} \boldsymbol{g}_j \odot \boldsymbol{g}_j}{1-\beta_2^{k+1}} .}
+$
+where $\beta_2 \in(0,1)$ and $\odot$ denoting the componentwise or Hadamard product given by
+$
+\boldsymbol{g}_k \odot \boldsymbol{g}_k=\left[\left[\boldsymbol{g}_k\right]_i^2\right]_{i=1}^d .
+$
+
+In practice, a vector of the form $\boldsymbol{v}_k+\eta \mathbf{1}_{\mathbb{R}^d}$ will be used in lieu of $\boldsymbol{v}_k$, with $\eta$ being a small positive number.
+
+}
+
+\end{multicols}
+
+% End the document
+\end{document}
